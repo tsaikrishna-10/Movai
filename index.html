@@ -623,6 +623,37 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 @media(min-width:701px){.wrap{max-width:900px;margin:auto}.hero{border-radius:0 0 28px 28px}.bottom-nav{bottom:16px}}
 @media(max-width:420px){.hero{min-height:650px;height:78svh;padding:24px 18px 42px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bottom-nav{width:calc(100% - 36px)}}
 
+
+/* MOVAI settings + icon-only navigation cleanup */
+.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important;height:66px!important;padding:6px 10px!important}
+.bottom-nav button{gap:0!important;justify-content:center!important}
+.bottom-nav button small{display:none!important}
+.bottom-nav button .nav-icon{width:25px!important;height:25px!important}
+.bottom-nav button .nav-icon svg{width:24px!important;height:24px!important;stroke-width:1.8!important}
+.bottom-nav button.active{background:#17271b!important;color:#e5f0e6!important}
+.bottom-nav button.active:before{display:none!important}
+#settings{max-width:760px;margin:0 auto;padding-top:26px}
+#settings .profile-heading{display:flex;align-items:center;gap:14px;margin:8px 0 24px}
+#settings .profile-avatar{width:54px;height:54px;border-radius:17px;background:#183522;border:1px solid #34543b;color:#e1eee3;display:grid;place-items:center;font-size:22px;font-weight:800}
+#settings .profile-kicker{font-size:10px;letter-spacing:2px;font-weight:800;color:#8eae94}
+#settings .profile-heading h1{font-size:30px;line-height:1.1;margin:3px 0 0;letter-spacing:-1px}
+#settings .settings-group{background:#0a110c;border:1px solid #233428;border-radius:17px;padding:5px 15px;margin:0 0 14px}
+#settings .settings-group-title{padding:13px 3px 5px;color:#91a596;font-size:10px;letter-spacing:1.5px}
+#settings .settings-row{padding:14px 2px;gap:12px;border-bottom:1px solid #ffffff0c}
+#settings .settings-icon{width:40px;height:40px;flex-basis:40px;border-radius:12px;background:#14251a;color:#c7d9ca;font-size:18px}
+#settings .settings-row strong{font-size:14px}
+#settings .settings-row small{font-size:11px;color:#8d9b90}
+#settings .settings-arrow{font-size:22px}
+#settings .panel{background:transparent;border:0;padding:14px 2px;margin:0;border-bottom:1px solid #ffffff0c}
+#settings .panel:last-child{border-bottom:0}
+#settings .panel h3{font-size:15px;margin-bottom:7px}
+#settings .panel p{font-size:12px;line-height:1.6}
+#settings .field{background:#080f0a;border-color:#2a3b2e;border-radius:11px}
+#settings .actions{display:flex;gap:8px;flex-wrap:wrap}
+#settings .actions button{min-height:42px}
+#settings .status{margin-top:10px}
+@media(max-width:420px){.bottom-nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:calc(100% - 28px)!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;height:62px!important;border-radius:19px!important}}
+
 </style>
 </head>
 <body>
@@ -685,9 +716,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 </section>
 <section id="downloads" class="page"><div class="section-head"><div><h2>Downloads</h2><small id="downloadCount">0 items in queue</small></div><button class="text-link" id="clearDownloadQueue">Clear queue</button></div><div class="panel download-panel"><div class="download-head"><div><span class="rank-eyebrow">OFFLINE LIBRARY</span><h3>Your download manager</h3></div><span class="download-status">QUEUE</span></div><p class="download-note">Queue items are saved on this device. Actual transfer, pause/resume and completed-file tracking are controlled by your browser; full in-app transfer controls require Android download integration.</p><div class="download-toolbar" id="downloadFilters"><button class="active" data-filter="all">All</button><button data-filter="queued">Queued</button><button data-filter="opened">Opened</button></div><div class="download-list" id="downloadList"><div class="empty">Your download queue is empty. Check a source in Player and add it here.</div></div></div></section><section id="settings" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">MOVAI PROFILE</div><h1>Settings</h1></div></div>
  <div class="settings-group"><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Download queue, quality and storage</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Player, subtitles and playback controls</small></span><span class="settings-arrow">›</span></button></div>
- <div class="settings-group">
- <div class="panel"><h3>Appearance</h3><p class="muted">Choose the typography used throughout MOVAI. Your choice is saved on this device.</p><label for="fontSelect" class="muted">App font</label><select class="field" id="fontSelect"><option value="plus-jakarta">Plus Jakarta Sans · Recommended</option><option value="ibm-plex">IBM Plex Sans · Editorial</option><option value="outfit">Outfit · Modern</option><option value="manrope">Manrope · Refined</option><option value="system">System default</option></select><p id="fontPreview" style="font-size:18px;font-weight:700;margin:14px 0 4px">Cinema, your way.</p><p class="muted" style="margin:0">Preview · The selected font applies to menus, cards and details.</p><div class="actions"><button class="secondary" id="resetFont">Reset font</button></div></div>
- </div><div class="settings-group"><div class="settings-group-title">Content & Discovery</div><div class="panel"><h3>TMDB connection</h3><p class="muted">Paste your TMDB API Read Access Token. It is stored only in this browser on this device.</p><label for="tmdbKey" class="muted">TMDB API Read Access Token (Bearer)</label><input class="field" id="tmdbKey" placeholder="Paste your TMDB Read Access Token" autocomplete="off"><div class="actions"><button class="primary" id="saveKey">Save API key</button><button class="secondary" id="clearKey">Remove key</button></div><div id="keyStatus" class="status"></div></div>
+<div class="settings-group"><div class="settings-group-title">Content & Discovery</div><div class="panel"><h3>TMDB connection</h3><p class="muted">Paste your TMDB API Read Access Token. It is stored only in this browser on this device.</p><label for="tmdbKey" class="muted">TMDB API Read Access Token (Bearer)</label><input class="field" id="tmdbKey" placeholder="Paste your TMDB Read Access Token" autocomplete="off"><div class="actions"><button class="primary" id="saveKey">Save API key</button><button class="secondary" id="clearKey">Remove key</button></div><div id="keyStatus" class="status"></div></div>
  </div><div class="settings-group"><div class="settings-group-title">About</div><div class="panel"><h3>About MOVAI</h3><p class="muted">MOVAI uses TMDB for discovery and metadata. It is not affiliated with TMDB. TMDB does not provide movie or TV video files. Use official streaming services or add authorized direct/embed URLs in Player.</p><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener" style="color:var(--green)">Get a TMDB API key ↗</a></div></div>
 </section>
 <div class="footer">MOVAI · Independent media companion. This product uses the TMDB API but is not endorsed or certified by TMDB.</div>
@@ -696,7 +725,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
  <button class="active" data-page="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
  <button data-page="search" aria-label="Search"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><small>Search</small></button>
  <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 4V2h8v2M8 9h8M8 13h8"/></svg></span><small>Library</small></button>
- <button data-page="settings" aria-label="Profile"><span class="nav-icon profile-nav-icon">M</span><small>Profile</small></button>
+ <button data-page="settings" aria-label="Settings"><span class="nav-icon profile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3.2-5 7-5s6.3 1.8 7 5"/></svg></span><small>Settings</small></button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
 <script>
