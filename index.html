@@ -950,7 +950,7 @@ function addTitleSourceToQueue(key,id){
  if(downloadQueue.some(x=>x.url===item.url)){page('downloads');setStatus($('playerStatus'),'This source is already in your download queue.','ok');return}
  const filename=filenameFromUrl(item.url);
  downloadQueue.unshift({id:String(Date.now()),url:item.url,name:filename,title:item.title||item.label||filename,format:(filename.split('.').pop()||'FILE').toUpperCase(),size:item.size||'Not checked yet',quality:item.quality||'Quality not specified',source:new URL(item.url).host,status:'queued',addedAt:new Date().toISOString(),sourceLabel:item.label||''});
- writeStore('movai_download_queue',downloadQueue);renderDownloadQueue();page('downloads');
+ writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();page('downloads');
 }
 document.addEventListener('submit',e=>{
  const form=e.target.closest('#titleSourceForm');if(!form)return;
