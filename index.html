@@ -93,7 +93,40 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
 #confirmDownloadBtn:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:360px){.download-meta{grid-template-columns:1fr}}
 
-</style>
+
+/* Movai navigation refresh — compact, consistent, icon-led */
+.bottom-nav{
+ position:fixed;z-index:50;left:50%;right:auto;bottom:calc(14px + env(safe-area-inset-bottom));
+ transform:translateX(-50%);width:min(680px,calc(100% - 32px));height:76px;
+ padding:8px 10px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;
+ border:1px solid #293b2d;border-radius:24px;
+ background:rgba(5,10,6,.94);backdrop-filter:blur(26px) saturate(140%);
+ box-shadow:0 16px 48px #000b, inset 0 1px #ffffff0a;
+}
+.bottom-nav button{
+ position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+ padding:7px 2px;border:0;border-radius:16px;background:transparent;color:#829087;
+ font-size:10px;font-weight:650;letter-spacing:.1px;transition:background .2s,color .2s;
+}
+.bottom-nav button .nav-icon{width:23px;height:23px;display:grid;place-items:center;font-size:0;line-height:1}
+.bottom-nav button .nav-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav button small{font-size:10px;line-height:1.1;white-space:nowrap}
+.bottom-nav button.active{color:#e1eee3;background:#17271b}
+.bottom-nav button.active:before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:19px;height:2px;border-radius:2px;background:#8eae94}
+.bottom-nav button:active{transform:scale(.96)}
+body{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+.home-dock{display:none!important}
+@media(min-width:900px){
+ .bottom-nav{bottom:20px;width:min(680px,90vw);height:72px}
+}
+@media(max-width:420px){
+ .bottom-nav{left:9px;right:9px;bottom:calc(8px + env(safe-area-inset-bottom));transform:none;width:auto;height:68px;padding:6px 5px;gap:2px;border-radius:20px}
+ .bottom-nav button{gap:4px;border-radius:14px}
+ .bottom-nav button .nav-icon{width:21px;height:21px}
+ .bottom-nav button .nav-icon svg{width:19px;height:19px}
+ .bottom-nav button small{font-size:9px}
+}
+\n</style>
 </head>
 <body>
 <header class="app-header">
@@ -153,13 +186,12 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
 <div class="footer">Movai · Independent media companion. This product uses the TMDB API but is not endorsed or certified by TMDB.</div>
 </main>
 <nav class="bottom-nav" aria-label="Main navigation">
- <button class="active" data-page="home"><span class="nav-icon">⌂</span><small>Home</small></button>
- <button data-page="movies"><span class="nav-icon">▣</span><small>Movies</small></button>
- <button data-page="tv"><span class="nav-icon">▤</span><small>TV</small></button>
- <button data-page="watchlist"><span class="nav-icon">♡</span><small>My List</small></button>
- <button data-page="player"><span class="nav-icon">▷</span><small>Player</small></button>
- <button data-page="search"><span class="nav-icon">⌕</span><small>Search</small></button>
- <button data-page="settings"><span class="nav-icon">▦</span><small>More</small></button>
+ <button class="active" data-page="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
+ <button data-page="movies" aria-label="Movies"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4m-4 8h4m10-8h4m-4 8h4"/></svg></span><small>Movies</small></button>
+ <button data-page="tv" aria-label="TV shows"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m8 21 4-3 4 3M9 9l6 2-6 2z"/></svg></span><small>Series</small></button>
+ <button data-page="search" aria-label="Search"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><small>Search</small></button>
+ <button data-page="watchlist" aria-label="My list"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.8 2.8Z"/></svg></span><small>My List</small></button>
+ <button data-page="settings" aria-label="Settings"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.8 1l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.8-1l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.8 1l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 2Z"/></svg></span><small>Settings</small></button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
 <script>
