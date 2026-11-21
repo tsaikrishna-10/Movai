@@ -126,12 +126,39 @@ body{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
  .bottom-nav button .nav-icon svg{width:19px;height:19px}
  .bottom-nav button small{font-size:9px}
 }
-\n</style>
+\n
+/* Homepage polish — compact search + live featured title */
+.app-header{height:68px;gap:clamp(12px,3vw,28px);padding:0 max(18px,calc((100vw - 1200px)/2));}
+.brand{font-size:27px;letter-spacing:-1.9px;text-decoration:none;flex:0 0 auto}
+.brand span{color:#78977e}
+.header-search{margin-left:auto;max-width:470px;position:relative;gap:0}
+.header-search input{height:46px;padding:0 52px 0 42px;border-radius:15px;background:#080e09;border-color:#26382a;font-size:14px}
+.header-search input::placeholder{color:#758178}
+.search-symbol{position:absolute;left:14px;top:50%;transform:translateY(-52%);font-size:25px;line-height:1;color:#87988b;pointer-events:none}
+.search-submit{position:absolute;right:5px;top:5px;width:36px;height:36px;border-radius:11px;background:#183321;color:#e4eee6;border:1px solid #35543c;font-size:23px;line-height:1}
+.search-submit:active{transform:scale(.94)}
+.hero{min-height:590px}
+.hero-copy{max-width:610px}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid #7c9b8138;border-radius:99px;background:#09120bb8;backdrop-filter:blur(10px)}
+.hero h1{max-width:650px;text-wrap:balance}
+.hero p{font-size:clamp(14px,2vw,17px);line-height:1.65}
+@media(max-width:700px){
+ .app-header{height:64px;padding:0 14px;gap:12px}
+ .brand{font-size:24px}
+ .header-search{max-width:none;min-width:0}
+ .header-search input{height:43px;padding-left:37px;padding-right:43px;font-size:13px;border-radius:14px}
+ .search-symbol{left:12px;font-size:22px}
+ .search-submit{width:34px;height:34px;right:4px;top:4px;font-size:21px}
+ .hero{min-height:570px}
+}
+@media(max-width:360px){.app-header{gap:9px}.brand{font-size:21px}.header-search input{font-size:12px}}
+
+</style>
 </head>
 <body>
 <header class="app-header">
-  <div class="brand">Mo<span>vai</span></div>
-  <form class="header-search" id="searchForm"><input id="searchInput" placeholder="Search movies & shows…" aria-label="Search titles"><button class="primary">Search</button></form>
+  <a class="brand" href="#" data-go="home" aria-label="Movai home">Mo<span>vai</span></a>
+  <form class="header-search" id="searchForm" role="search"><span class="search-symbol" aria-hidden="true">⌕</span><input id="searchInput" placeholder="Search movies, series…" aria-label="Search titles"><button class="search-submit" aria-label="Search" title="Search">⌕</button></form>
 </header>
 <main class="wrap">
 <section id="home" class="page active">
@@ -142,7 +169,7 @@ body{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
       <button type="button" data-go="watchlist"><span>♡</span><small>My List</small></button>
       <button type="button" data-go="player"><span>▷</span><small>Player</small></button>
     </div>
-    <div class="hero-copy"><div class="eyebrow">MOVAI ORIGINAL · YOUR CINEMA SPACE</div><h1>Stories worth<br>staying in for.</h1><p>Discover films and series, follow your favourites and keep your personal watch space in one place.</p><div class="actions"><button class="primary" id="exploreBtn">Explore titles</button><button class="secondary" id="heroPlayerBtn">Open player</button></div></div>
+    <div class="hero-copy"><div class="eyebrow" id="heroEyebrow">YOUR NEXT GREAT WATCH STARTS HERE</div><h1 id="heroTitle">Stories worth<br>staying in for.</h1><p id="heroOverview">Discover films and series, follow your favourites and keep your personal watch space in one place.</p><div class="actions"><button class="primary" id="exploreBtn">Explore titles</button><button class="secondary" id="heroPlayerBtn">Open player</button></div></div>
     <div class="hero-mark">M</div>
   </div>
   <div class="section-head"><h2>Continue watching</h2><button class="text-link" id="clearContinue">Clear</button></div><div id="continueRail" class="rail continue-rail"><div class="empty">Your recently played sources will appear here.</div></div>
@@ -332,7 +359,17 @@ async function loadHome(){
  try{
   const [tr,m,t]=await Promise.all([api('/trending/all/week?language=en-US'),api('/movie/popular?language=en-US&page=1'),api('/tv/popular?language=en-US&page=1')]);
   cards(tr.results.slice(0,20),'trendingRail');rankCards(m.results,'homeTopMovies');rankCards(t.results,'homeTopTv');
-  if(tr.results[0]?.backdrop_path)$('homeHero').style.backgroundImage=`linear-gradient(90deg,#030504f5 0%,#030504c8 47%,#03050433 100%),linear-gradient(0deg,#030504aa,transparent 55%),url('${BACK+tr.results[0].backdrop_path}')`;
+  const featured=tr.results.find(x=>x.backdrop_path)||tr.results[0];
+  if(featured){
+   const title=featured.title||featured.name||'Trending now';
+   const year=(featured.release_date||featured.first_air_date||'').slice(0,4);
+   $('heroEyebrow').textContent='TRENDING NOW'+(year?' · '+year:'')+(featured.vote_average?' · ★ '+Number(featured.vote_average).toFixed(1):'');
+   $('heroTitle').textContent=title;
+   $('heroOverview').textContent=featured.overview||'Discover the stories everyone is watching right now.';
+   if(featured.backdrop_path)$('homeHero').style.backgroundImage=`linear-gradient(90deg,#030504f5 0%,#030504c8 47%,#03050433 100%),linear-gradient(0deg,#030504aa,transparent 55%),url('${BACK+featured.backdrop_path}')`;
+   $('heroTitle').style.cursor='pointer';
+   $('heroTitle').onclick=()=>openDetail(featured.id,featured.media_type||(featured.first_air_date?'tv':'movie'));
+  }
  }catch(e){$('trendingRail').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}
 }
 async function loadGenres(type){
