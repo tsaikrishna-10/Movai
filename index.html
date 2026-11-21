@@ -80,6 +80,19 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
 @media(min-width:900px){.hero{margin:-22px -20px 24px;padding-left:max(24px,calc((100vw - 1160px)/2));padding-right:max(24px,calc((100vw - 1160px)/2))}.bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(720px,90vw);bottom:18px}}
 @media(max-width:700px){.hero{min-height:560px;margin:-15px -14px 22px;padding:28px 20px 35px;background-position:center}.hero h1{font-size:43px}.home-dock{top:14px;width:calc(100% - 28px);padding:7px 8px}.home-dock button{min-width:58px;padding:7px 6px}.rank-section{margin:30px 0 36px}.rank-rail{grid-auto-columns:82vw;gap:13px}.rank-card{min-height:245px;padding-left:43px}.rank-art{height:190px;border-radius:16px}.rank-number{font-size:158px}.rank-info{left:55px;bottom:20px}.rank-title{font-size:15px}.bottom-nav{left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));height:64px;border-radius:20px}.bottom-nav button .nav-icon{font-size:19px}.bottom-nav button small{font-size:8px}.wrap{padding-top:15px}}
 @media(max-width:360px){.bottom-nav button small{font-size:7px}.rank-rail{grid-auto-columns:86vw}}
+.download-panel{border-color:#314a37;background:linear-gradient(145deg,#0c150e,#060a07);box-shadow:inset 0 1px 0 #ffffff08}
+.download-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+.download-head h3{font-size:19px;margin:4px 0 0}
+.download-status{font-size:10px;font-weight:850;letter-spacing:.7px;color:#a9c5ae;border:1px solid #35543c;background:#122218;border-radius:99px;padding:6px 10px;white-space:nowrap}
+.download-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.download-meta>div{min-width:0;padding:11px;border:1px solid #243629;border-radius:12px;background:#080f0a}
+.download-meta small{display:block;color:#84968a;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.download-meta strong{display:block;color:#e4ece5;font-size:13px;overflow-wrap:anywhere}
+.download-url-row{grid-column:1/-1}
+#downloadNote{font-size:12px;margin:13px 0}
+#confirmDownloadBtn:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:360px){.download-meta{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -116,7 +129,19 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
  <div class="full"><label for="videoUrl">Direct video URL (MP4 / WebM / supported HLS)</label><input class="field" id="videoUrl" placeholder="https://example.com/video.mp4"></div>
  <div><label for="subtitleUrl">Subtitle URL (optional .vtt)</label><input class="field" id="subtitleUrl" placeholder="https://example.com/subtitles.vtt"></div>
  <div><label for="sourceName">Source label (optional)</label><input class="field" id="sourceName" placeholder="My video source"></div></div>
- <div class="actions"><button class="primary" id="playUrlBtn">Play direct video</button><button class="secondary" id="playEmbedBtn">Open embed player</button><button class="secondary" id="downloadUrlBtn">Download link</button></div><div class="status" id="playerStatus">Only use sources you own or are authorized to access.</div></div>
+ <div class="actions"><button class="primary" id="playUrlBtn">Play direct video</button><button class="secondary" id="playEmbedBtn">Open embed player</button><button class="secondary" id="downloadUrlBtn">Check download details</button></div><div class="status" id="playerStatus">Only use sources you own or are authorized to access.</div></div>
+ <div class="panel download-panel hidden" id="downloadDetails" aria-live="polite">
+  <div class="download-head"><div><span class="rank-eyebrow">DOWNLOAD CHECK</span><h3 id="downloadTitle">File details</h3></div><span class="download-status" id="downloadStatus">CHECKING</span></div>
+  <div class="download-meta">
+   <div><small>File name</small><strong id="downloadName">—</strong></div>
+   <div><small>Format</small><strong id="downloadFormat">—</strong></div>
+   <div><small>File size</small><strong id="downloadSize">Checking host…</strong></div>
+   <div><small>Quality</small><strong id="downloadQuality">Not provided</strong></div>
+   <div class="download-url-row"><small>Source</small><strong id="downloadSource">—</strong></div>
+  </div>
+  <p class="muted" id="downloadNote">File details depend on the source server.</p>
+  <button class="primary" id="confirmDownloadBtn" disabled>Open download</button>
+ </div>
  <div class="player-box"><iframe id="embedPlayer" class="hidden" title="Authorized embedded video player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><video id="video" controls playsinline preload="metadata"><track id="captionTrack" kind="subtitles" label="Subtitles" srclang="en"></video><div class="player-tools"><div class="tool-row"><input class="field" id="quickUrl" placeholder="Paste a video URL"><button class="primary" id="quickPlay">Play</button></div><div class="tool-row"><button class="secondary" id="pipBtn">Picture in picture</button><button class="secondary" id="fullscreenBtn">Fullscreen</button></div></div></div>
  <div class="panel"><h3>Playback notes</h3><p class="muted">MP4 and WebM are broadly supported. HLS depends on browser support. DRM-protected streams and provider-restricted downloads are not supported. MKV may require a compatible Android player or conversion.</p></div>
 </section>
@@ -383,7 +408,54 @@ if($('video'))$('video').addEventListener('error',()=>{
 if($('playUrlBtn'))$('playUrlBtn').onclick=()=>playUrl($('videoUrl').value.trim());
 if($('quickPlay'))$('quickPlay').onclick=()=>playUrl($('quickUrl').value.trim());
 if($('playEmbedBtn'))$('playEmbedBtn').onclick=()=>{const u=$('embedUrl').value.trim();if(!/^https:\/\//i.test(u)){setStatus($('playerStatus'),'Enter a valid authorized HTTPS embed URL.','error');return}try{const parsed=new URL(u);$('video').pause();$('video').classList.add('hidden');const f=$('embedPlayer');f.src=parsed.href;f.classList.remove('hidden');rememberContinue(parsed.href,$('sourceName').value.trim()||'Embedded source','Embed');setStatus($('playerStatus'),'Authorized embed loaded. Provider embedding permissions apply.')}catch(e){setStatus($('playerStatus'),'Please enter a valid HTTPS embed URL.','error')}};
-if($('downloadUrlBtn'))$('downloadUrlBtn').onclick=()=>{const u=$('videoUrl').value.trim();if(!/^https?:\/\//i.test(u)){setStatus($('playerStatus'),'Enter a valid direct URL first.','error');return}const a=document.createElement('a');a.href=u;a.download='';a.target='_blank';a.rel='noopener';a.click();setStatus($('playerStatus'),'Download opened if the source permits it. Some hosts stream instead.')};
+let checkedDownloadUrl='';
+function humanFileSize(value){
+ const n=Number(value);if(!Number.isFinite(n)||n<0)return 'Not provided by host';
+ if(n<1024)return n+' B';
+ const units=['KB','MB','GB','TB'];let v=n/1024,i=0;
+ while(v>=1024&&i<units.length-1){v/=1024;i++}
+ return v.toFixed(v>=100?0:1)+' '+units[i];
+}
+function filenameFromUrl(url){
+ try{return decodeURIComponent(new URL(url).pathname.split('/').pop()||'video-file')}catch(e){return 'video-file'}
+}
+function showDownloadDetails(url,meta){
+ const box=$('downloadDetails');if(!box)return;
+ const name=meta.name||filenameFromUrl(url),type=meta.type||name.split('.').pop()||'Unknown';
+ const quality=(name.match(/(?:2160|1440|1080|720|480)p/i)||[])[0]||'Not provided';
+ $('downloadTitle').textContent=$('sourceName').value.trim()||name;
+ $('downloadName').textContent=name;
+ $('downloadFormat').textContent=String(type).replace(/^video\//i,'').toUpperCase();
+ $('downloadSize').textContent=meta.size||'Not provided by host';
+ $('downloadQuality').textContent=quality;
+ $('downloadSource').textContent=new URL(url).host;
+ $('downloadStatus').textContent=meta.verified?'DETAILS FOUND':'LIMITED DETAILS';
+ $('downloadNote').textContent=meta.note||'Quality and size are shown only when the source server exposes them. The host may still block or redirect downloads.';
+ checkedDownloadUrl=url;$('confirmDownloadBtn').disabled=false;box.classList.remove('hidden');
+}
+if($('downloadUrlBtn'))$('downloadUrlBtn').onclick=async()=>{
+ const u=$('videoUrl').value.trim(),box=$('downloadDetails');
+ if(!/^https?:\/\//i.test(u)){setStatus($('playerStatus'),'Enter a valid direct URL first.','error');if(box)box.classList.add('hidden');return}
+ if(box){box.classList.remove('hidden');$('downloadStatus').textContent='CHECKING';$('downloadTitle').textContent='Reading source details…';$('confirmDownloadBtn').disabled=true}
+ setStatus($('playerStatus'),'Checking the source for file details…');
+ try{
+  const response=await fetch(u,{method:'HEAD'}),cd=response.headers.get('content-disposition')||'';
+  const match=cd.match(/filename\*?=(?:UTF-8''|\")?([^;\"]+)/i);
+  const name=match?decodeURIComponent(match[1].replace(/\"$/,'')):filenameFromUrl(u);
+  const mime=response.headers.get('content-type')||'',length=response.headers.get('content-length');
+  showDownloadDetails(u,{name,type:mime||name.split('.').pop(),size:length?humanFileSize(length):'Not provided by host',verified:response.ok,note:response.ok?'Metadata returned by the source server.':'The source returned limited metadata.'});
+  setStatus($('playerStatus'),'Source checked. Review the file details before opening the download.','ok');
+ }catch(e){
+  const name=filenameFromUrl(u);
+  showDownloadDetails(u,{name,type:name.split('.').pop()||'Unknown',size:'Unavailable (host blocked metadata)',verified:false,note:'This server blocks browser metadata checks (often CORS). Filename is inferred from the URL; size and quality cannot be verified.'});
+  setStatus($('playerStatus'),'Could not read host metadata. Showing details available from the URL.');
+ }
+};
+if($('confirmDownloadBtn'))$('confirmDownloadBtn').onclick=()=>{
+ if(!checkedDownloadUrl)return;
+ const a=document.createElement('a');a.href=checkedDownloadUrl;a.target='_blank';a.rel='noopener';a.click();
+ setStatus($('playerStatus'),'Download request opened. The host decides whether it downloads or streams.','ok');
+};
 if($('pipBtn'))$('pipBtn').onclick=()=>{const v=$('video');if(document.pictureInPictureEnabled&&v.requestPictureInPicture)v.requestPictureInPicture().catch(()=>{});else setStatus($('playerStatus'),'Picture-in-picture is not supported here.','error')};
 if($('fullscreenBtn'))$('fullscreenBtn').onclick=()=>{const v=$('video');if(v.requestFullscreen)v.requestFullscreen();else $('embedPlayer').requestFullscreen?.()};
 
