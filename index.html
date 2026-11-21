@@ -954,7 +954,17 @@ async function startQueuedDownload(id){
   const type=response.headers.get('content-type')||'';
   if(/mpegurl|vnd\\.apple\\.mpegurl/i.test(type))throw new Error('This is an HLS playlist, not a direct file. Use a direct MP4/WebM download URL.');
   const total=Number(response.headers.get('content-length')||0);
-  if(total>850*1024*1024&&!('showSaveFilePicker'in window))throw new Error('This file is larger than the safe in-browser limit (850 MB). Use the provider’s official download option or a native MOVAI Android build for large files.');
+  const disposition=response.headers.get('content-disposition')||'';
+  const match=disposition.match(/filename\\*?=(?:UTF-8''|")?([^;"]+)/i);
+  const filename=(match?decodeURIComponent(match[1].replace(/"$/,'')):item.name)||'movai-video';
+  if(total>850*1024*1024){
+   if(!window.showSaveFilePicker||!response.body?.getReader)throw new Error('This file is larger than the safe in-browser limit (850 MB). Large downloads need a native MOVAI Android build or the provider’s official download option.');
+   const handle=await window.showSaveFilePicker({suggestedName:filename});
+   const writable=await handle.createWritable(),reader=response.body.getReader();let received=0;
+   try{while(true){const part=await reader.read();if(part.done)break;await writable.write(part.value);received+=part.value.byteLength;const pct=total?Math.min(99,Math.round(received/total*100)):0;update(pct,'Downloading · '+pct+'%')}await writable.close()}
+   catch(error){await writable.abort();throw error}
+   item.status='completed';item.progress=100;item.name=filename;item.completedAt=new Date().toISOString();item.size=humanFileSize(received);writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();return;
+  }
   let blob;
   if(response.body&&response.body.getReader){
    const reader=response.body.getReader(),chunks=[];let received=0;
@@ -966,9 +976,6 @@ async function startQueuedDownload(id){
    }
    blob=new Blob(chunks,{type:type||'application/octet-stream'});
   }else{blob=await response.blob();update(99,'Preparing file…')}
-  const disposition=response.headers.get('content-disposition')||'';
-  const match=disposition.match(/filename\\*?=(?:UTF-8''|")?([^;"]+)/i);
-  const filename=(match?decodeURIComponent(match[1].replace(/"$/,'')):item.name)||'movai-video';
   const objectUrl=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=objectUrl;a.download=filename;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
