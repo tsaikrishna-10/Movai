@@ -539,6 +539,18 @@ body{background:#050307!important;color:#f7f3fa!important}
  .bottom-nav>button.active{background:#32152f!important}
 }
 
+
+/* MOVAI download manager — real transfer feedback */
+.download-progress{display:block;width:100%;height:7px;margin:10px 0 6px;accent-color:#ef3c9e;border:0;border-radius:99px;overflow:hidden}
+.download-state{display:block;font-size:11px;color:#f0a8d1;margin-top:5px;overflow-wrap:anywhere}
+.download-state.error{color:#ff8f8f}
+.download-actions button:disabled{opacity:.55;cursor:wait}
+.download-item{background:#0d0911;border:1px solid #302139;border-radius:14px;padding:12px;margin:10px 0}
+.download-item h4{margin:0 0 5px;font-size:14px}
+.download-item p{margin:3px 0;font-size:11px;color:#a99bad;overflow-wrap:anywhere}
+.download-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.download-actions button{padding:9px 12px;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -925,10 +937,51 @@ function addToDownloadQueue(){
  downloadQueue.unshift({id:String(Date.now()),url:m.url,name:m.name,title:$('sourceName').value.trim()||m.name,format:String(m.type).replace('video/','').toUpperCase(),size:m.size,quality:m.quality,source:m.source,status:'queued',addedAt:new Date().toISOString()});
  writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();setStatus($('playerStatus'),'Added to your download queue. Open Downloads to start it.','ok');
 }
-function startQueuedDownload(id){
- const item=downloadQueue.find(x=>x.id===id);if(!item)return;
- const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener';a.download=item.name||'video-file';a.click();
- item.status='opened';item.openedAt=new Date().toISOString();writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();
+async function startQueuedDownload(id){
+ const item=downloadQueue.find(x=>x.id===id);if(!item||item.status==='downloading')return;
+ if(/\\.m3u8(?:$|\\?)/i.test(item.url)){
+  setDownloadMessage(id,'HLS playlist detected. This is not a single video file; choose a direct MP4/WebM source or an authorized downloadable rendition.','error');return;
+ }
+ item.status='downloading';item.progress=0;item.error='';writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();
+ const update=(percent,message)=>{
+  item.progress=percent;item.progressText=message||'Downloading…';writeStore('krxnu_download_queue',downloadQueue);
+  const card=document.querySelector('[data-download-item="'+CSS.escape(id)+'"]');
+  if(card){const bar=card.querySelector('progress');if(bar)bar.value=percent;const label=card.querySelector('.download-state');if(label)label.textContent=message||('Downloading · '+percent+'%')}
+ };
+ try{
+  const response=await fetch(item.url,{method:'GET',mode:'cors',credentials:'omit'});
+  if(!response.ok)throw new Error('Source returned HTTP '+response.status+'.');
+  const type=response.headers.get('content-type')||'';
+  if(/mpegurl|vnd\\.apple\\.mpegurl/i.test(type))throw new Error('This is an HLS playlist, not a direct file. Use a direct MP4/WebM download URL.');
+  const total=Number(response.headers.get('content-length')||0);
+  if(total>850*1024*1024&&!('showSaveFilePicker'in window))throw new Error('This file is larger than the safe in-browser limit (850 MB). Use the provider’s official download option or a native MOVAI Android build for large files.');
+  let blob;
+  if(response.body&&response.body.getReader){
+   const reader=response.body.getReader(),chunks=[];let received=0;
+   while(true){
+    const part=await reader.read();if(part.done)break;
+    chunks.push(part.value);received+=part.value.byteLength;
+    const pct=total?Math.min(99,Math.round(received/total*100)):0;
+    update(pct,total?('Downloading · '+pct+'%'):('Downloaded '+humanFileSize(received)));
+   }
+   blob=new Blob(chunks,{type:type||'application/octet-stream'});
+  }else{blob=await response.blob();update(99,'Preparing file…')}
+  const disposition=response.headers.get('content-disposition')||'';
+  const match=disposition.match(/filename\\*?=(?:UTF-8''|")?([^;"]+)/i);
+  const filename=(match?decodeURIComponent(match[1].replace(/"$/,'')):item.name)||'movai-video';
+  const objectUrl=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=objectUrl;a.download=filename;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
+  item.status='completed';item.progress=100;item.name=filename;item.completedAt=new Date().toISOString();item.size=humanFileSize(blob.size);
+  writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();
+ }catch(error){
+  item.status='failed';item.error=error.message||'Download failed';writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();
+  setDownloadMessage(id,item.error,'error');
+ }
+}
+function setDownloadMessage(id,message,type){
+ const card=document.querySelector('[data-download-item="'+CSS.escape(id)+'"]');
+ if(card){const label=card.querySelector('.download-state');if(label){label.textContent=message;label.classList.toggle('error',type==='error')}}
 }
 function removeQueuedDownload(id){downloadQueue=downloadQueue.filter(x=>x.id!==id);writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue()}
 function renderDownloadQueue(){
@@ -936,7 +989,7 @@ function renderDownloadQueue(){
  if($('downloadCount'))$('downloadCount').textContent=downloadQueue.length+' items in queue';
  const visible=downloadQueue.filter(x=>activeDownloadFilter==='all'||x.status===activeDownloadFilter);
  if(!visible.length){list.innerHTML='<div class="empty">'+(downloadQueue.length?'No items in this section.':'Your download queue is empty. Check a source in Player and add it here.')+'</div>';return}
- list.innerHTML=visible.map(x=>'<article class="download-item"><div class="download-file-icon">↓</div><div><h4>'+esc(x.title||x.name)+'</h4><p>'+esc(x.name)+' · '+esc(x.format||'FILE')+' · '+esc(x.quality||'Quality unknown')+'</p><p>'+esc(x.size||'Size unavailable')+' · '+esc(x.source||'Source unavailable')+'</p><span class="download-state">'+(x.status==='opened'?'Download opened in browser':'Ready in queue')+'</span></div><div class="download-actions"><button class="primary" data-start="'+esc(x.id)+'">'+(x.status==='opened'?'Open again':'Download now')+'</button><button class="secondary" data-remove="'+esc(x.id)+'">Remove</button></div></article>').join('');
+ list.innerHTML=visible.map(x=>'<article class="download-item" data-download-item="'+esc(x.id)+'"><div class="download-file-icon">↓</div><div><h4>'+esc(x.title||x.name)+'</h4><p>'+esc(x.name)+' · '+esc(x.format||'FILE')+' · '+esc(x.quality||'Quality unknown')+'</p><p>'+esc(x.size||'Size unavailable')+' · '+esc(x.source||'Source unavailable')+'</p>'+(x.status==='downloading'?'<progress max="100" value="'+Number(x.progress||0)+'" class="download-progress"></progress>':'')+'<span class="download-state">'+(x.status==='completed'?'Downloaded · '+esc(x.size||'File saved'):x.status==='failed'?'Failed · '+esc(x.error||'Try again'):x.status==='downloading'?esc(x.progressText||'Downloading…'):'Ready to download')+'</span></div><div class="download-actions"><button class="primary" data-start="'+esc(x.id)+'" '+(x.status==='downloading'?'disabled':'')+'>'+(x.status==='completed'?'Download again':x.status==='failed'?'Retry':x.status==='downloading'?'Downloading…':'Download now')+'</button><button class="secondary" data-remove="'+esc(x.id)+'">Remove</button></div></article>').join('');
  list.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>startQueuedDownload(b.dataset.start));
  list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>removeQueuedDownload(b.dataset.remove));
 }
