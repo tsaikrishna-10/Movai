@@ -557,6 +557,72 @@ body{background:#050307!important;color:#f7f3fa!important}
 .download-meta>div{background:#0a070e!important;border:1px solid #34243d!important}
 #downloadNote{line-height:1.55}
 @media(min-width:700px){.download-meta{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Nuvio-inspired mobile interface — MOVAI */
+:root{--bg:#000;--surface:#1b1b1d;--surface2:#242426;--line:#303033;--muted:#96969d;--text:#f7f7f8;--navh:82px}
+html,body{background:#000}
+body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-bottom))}
+.app-header{display:none}
+.wrap{max-width:100%;padding:0 0 38px}
+#home{padding-bottom:12px}
+.hero{min-height:min(720px,88svh);height:min(720px,88svh);border:0;border-radius:0 0 28px 28px;padding:28px 24px 48px;align-items:flex-end;justify-content:center;text-align:center;background-color:#171719;background-position:center 24%;background-size:cover;box-shadow:none}
+.hero:after{background:linear-gradient(0deg,#000 0%,#000b 25%,transparent 76%),linear-gradient(180deg,#0002,transparent 30%)}
+.hero-copy{max-width:650px;width:100%;margin:0 auto}
+.hero-mark{display:none}
+.home-dock{display:none}
+.eyebrow{display:none}
+.hero h1{font-size:clamp(32px,8vw,54px);letter-spacing:-1.8px;line-height:1.04;margin:0 0 12px}
+.hero p{font-size:13px;line-height:1.45;margin:0 auto;color:#eee;max-width:420px}
+.hero .actions{justify-content:center;margin-top:20px}
+.hero .primary{background:#f4f4f5;color:#080808;border-radius:999px;padding:14px 30px;box-shadow:none}
+.hero .secondary{border-radius:999px;background:#1c1c1dcc;border:1px solid #ffffff55}
+.section-head{margin:30px 20px 15px}
+.section-head h2{font-size:22px;font-weight:750;letter-spacing:-.5px}
+.rank-section{padding:0 20px}
+.rank-heading{margin:30px 0 15px}
+.rank-rail{overflow-x:auto}
+.rail{padding:0 20px 12px;grid-auto-columns:142px;gap:12px;scrollbar-width:none}
+.card{border:0;border-radius:12px;background:#171719}
+.card:hover{transform:none;box-shadow:none}
+.continue-rail{grid-auto-columns:minmax(280px,68vw)}
+.continue-card{min-height:164px;border:0;border-radius:16px;background:#171719}
+.continue-art{opacity:.82}
+.continue-content{min-height:164px}
+.page{min-height:calc(100svh - var(--navh))}
+#movies,#tv,#search,#watchlist,#downloads,#settings,#detail,#player{padding:26px 20px 42px}
+#movies .section-head,#tv .section-head,#search .section-head,#watchlist .section-head,#downloads .section-head{margin:0 0 18px}
+.search-inline{display:flex;gap:9px;margin:0 0 20px}
+.search-inline .field{flex:1;min-width:0}
+.search-inline .primary{background:#f3f3f4;color:#090909;border-radius:14px;box-shadow:none}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.bottom-nav{left:50%;right:auto;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:calc(100% - 44px);max-width:590px;height:76px;padding:7px 8px;background:#242426ed;border:1px solid #55555b;border-radius:40px;box-shadow:0 8px 30px #0009;backdrop-filter:blur(12px);grid-template-columns:repeat(4,1fr);gap:4px}
+.bottom-nav button{font-size:12px;gap:1px;border-radius:32px;color:#a7a7ad}
+.bottom-nav button .nav-icon{font-size:24px;line-height:1.15}
+.bottom-nav button .nav-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav button.active{background:#454549;color:#fff}
+.profile-nav-icon{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#49494f;color:#fff;font-size:15px!important;font-weight:800;border:1px solid #a5a5aa}
+.bottom-nav button.active .nav-icon{filter:none}
+.profile-heading{display:flex;align-items:center;gap:15px;margin:18px 0 28px}
+.profile-heading h1{font-size:36px;letter-spacing:-1.3px;margin:0;font-weight:850}
+.profile-kicker{font-size:10px;letter-spacing:2px;color:#999;text-transform:uppercase;font-weight:800}
+.profile-avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#3b3b40;color:white;font-size:24px;font-weight:900;border:2px solid #777}
+.settings-group{background:#1b1b1d;border:1px solid #29292c;border-radius:26px;padding:6px 18px;margin:0 0 18px;overflow:hidden}
+.settings-group-title{font-size:12px;color:#a4a4aa;text-transform:uppercase;letter-spacing:1.2px;font-weight:800;padding:14px 4px 4px}
+.settings-row{width:100%;display:flex;align-items:center;gap:15px;text-align:left;background:transparent;color:#f5f5f6;padding:17px 2px;border-bottom:1px solid #ffffff0b}
+.settings-row:last-child{border-bottom:0}
+.settings-icon{width:48px;height:48px;flex:0 0 48px;border-radius:15px;background:#353538;display:grid;place-items:center;font-size:21px}
+.settings-row strong{display:block;font-size:16px;font-weight:600}
+.settings-row small{display:block;color:#99999f;font-size:13px;line-height:1.35;margin-top:2px}
+.settings-arrow{margin-left:auto;color:#85858a;font-size:25px}
+#settings .panel{background:transparent;border:0;border-radius:0;padding:16px 2px;margin:0;border-bottom:1px solid #ffffff0b}
+#settings .panel:last-child{border-bottom:0}
+#settings .panel h3{font-size:16px}
+#settings .panel p{font-size:13px}
+#settings .field{background:#29292c;border-color:#3c3c40}
+#settings .actions{gap:8px}
+@media(min-width:701px){.wrap{max-width:900px;margin:auto}.hero{border-radius:0 0 28px 28px}.bottom-nav{bottom:16px}}
+@media(max-width:420px){.hero{min-height:650px;height:78svh;padding:24px 18px 42px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bottom-nav{width:calc(100% - 36px)}}
+
 </style>
 </head>
 <body>
@@ -586,7 +652,7 @@ body{background:#050307!important;color:#f7f3fa!important}
 </section>
 <section id="movies" class="page"><div class="section-head"><h2>Movies</h2><small>Discover something great</small></div><div class="chips" id="movieGenres"></div><div id="moviesGrid" class="grid"></div></section>
 <section id="tv" class="page"><div class="section-head"><h2>TV Shows</h2><small>Series worth your time</small></div><div class="chips" id="tvGenres"></div><div id="tvGrid" class="grid"></div></section>
-<section id="search" class="page"><div class="section-head"><h2 id="searchTitle">Search</h2></div><div id="searchGrid" class="grid"><div class="empty">Search for a movie or TV show.</div></div></section>
+<section id="search" class="page"><div class="section-head"><h2 id="searchTitle">Search</h2></div><form class="search-inline" id="searchFormMobile"><input class="field" id="searchInputMobile" placeholder="Search movies & series…" aria-label="Search titles"><button class="primary">Search</button></form><div id="searchGrid" class="grid"><div class="empty">Search for a movie or TV show.</div></div></section>
 <section id="watchlist" class="page"><div class="section-head"><h2>My Watchlist</h2><small id="watchCount">0 titles</small></div><div id="watchGrid" class="grid"><div class="empty">Your watchlist is empty. Add titles from their detail pages.</div></div></section>
 <section id="detail" class="page"><button class="secondary detail-back" id="backBtn">← Back</button><div id="detailContent"></div></section>
 <section id="player" class="page">
@@ -617,24 +683,20 @@ body{background:#050307!important;color:#f7f3fa!important}
  <div class="actions"><button class="primary" id="playUrlBtn">Play direct video</button><button class="secondary" id="playEmbedBtn">Open embed player</button><button class="secondary" id="downloadUrlBtn">Check download details</button></div><div class="status" id="playerStatus">Only use sources you own or are authorized to access.</div></div></details>
  <div class="panel"><h3>Playback notes</h3><p class="muted">MP4 and WebM are broadly supported. HLS depends on browser support. DRM-protected streams and provider-restricted downloads are not supported. MKV may require a compatible Android player or conversion.</p></div>
 </section>
-<section id="downloads" class="page"><div class="section-head"><div><h2>Downloads</h2><small id="downloadCount">0 items in queue</small></div><button class="text-link" id="clearDownloadQueue">Clear queue</button></div><div class="panel download-panel"><div class="download-head"><div><span class="rank-eyebrow">OFFLINE LIBRARY</span><h3>Your download manager</h3></div><span class="download-status">QUEUE</span></div><p class="download-note">Queue items are saved on this device. Actual transfer, pause/resume and completed-file tracking are controlled by your browser; full in-app transfer controls require Android download integration.</p><div class="download-toolbar" id="downloadFilters"><button class="active" data-filter="all">All</button><button data-filter="queued">Queued</button><button data-filter="opened">Opened</button></div><div class="download-list" id="downloadList"><div class="empty">Your download queue is empty. Check a source in Player and add it here.</div></div></div></section><section id="settings" class="page"><div class="section-head"><h2>Settings</h2></div>
+<section id="downloads" class="page"><div class="section-head"><div><h2>Downloads</h2><small id="downloadCount">0 items in queue</small></div><button class="text-link" id="clearDownloadQueue">Clear queue</button></div><div class="panel download-panel"><div class="download-head"><div><span class="rank-eyebrow">OFFLINE LIBRARY</span><h3>Your download manager</h3></div><span class="download-status">QUEUE</span></div><p class="download-note">Queue items are saved on this device. Actual transfer, pause/resume and completed-file tracking are controlled by your browser; full in-app transfer controls require Android download integration.</p><div class="download-toolbar" id="downloadFilters"><button class="active" data-filter="all">All</button><button data-filter="queued">Queued</button><button data-filter="opened">Opened</button></div><div class="download-list" id="downloadList"><div class="empty">Your download queue is empty. Check a source in Player and add it here.</div></div></div></section><section id="settings" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">MOVAI PROFILE</div><h1>Settings</h1></div></div>
+ <div class="settings-group"><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Download queue, quality and storage</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Player, subtitles and playback controls</small></span><span class="settings-arrow">›</span></button></div>
+ <div class="settings-group"><div class="settings-group-title">Appearance</div>
  <div class="panel"><h3>Appearance</h3><p class="muted">Choose the typography used throughout MOVAI. Your choice is saved on this device.</p><label for="fontSelect" class="muted">App font</label><select class="field" id="fontSelect"><option value="plus-jakarta">Plus Jakarta Sans · Recommended</option><option value="ibm-plex">IBM Plex Sans · Editorial</option><option value="outfit">Outfit · Modern</option><option value="manrope">Manrope · Refined</option><option value="system">System default</option></select><p id="fontPreview" style="font-size:18px;font-weight:700;margin:14px 0 4px">Cinema, your way.</p><p class="muted" style="margin:0">Preview · The selected font applies to menus, cards and details.</p><div class="actions"><button class="secondary" id="resetFont">Reset font</button></div></div>
- <div class="panel"><h3>TMDB connection</h3><p class="muted">Paste your TMDB API Read Access Token. It is stored only in this browser on this device.</p><label for="tmdbKey" class="muted">TMDB API Read Access Token (Bearer)</label><input class="field" id="tmdbKey" placeholder="Paste your TMDB Read Access Token" autocomplete="off"><div class="actions"><button class="primary" id="saveKey">Save API key</button><button class="secondary" id="clearKey">Remove key</button></div><div id="keyStatus" class="status"></div></div>
- <div class="panel"><h3>About MOVAI</h3><p class="muted">MOVAI uses TMDB for discovery and metadata. It is not affiliated with TMDB. TMDB does not provide movie or TV video files. Use official streaming services or add authorized direct/embed URLs in Player.</p><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener" style="color:var(--green)">Get a TMDB API key ↗</a></div>
+ </div><div class="settings-group"><div class="settings-group-title">Content & Discovery</div><div class="panel"><h3>TMDB connection</h3><p class="muted">Paste your TMDB API Read Access Token. It is stored only in this browser on this device.</p><label for="tmdbKey" class="muted">TMDB API Read Access Token (Bearer)</label><input class="field" id="tmdbKey" placeholder="Paste your TMDB Read Access Token" autocomplete="off"><div class="actions"><button class="primary" id="saveKey">Save API key</button><button class="secondary" id="clearKey">Remove key</button></div><div id="keyStatus" class="status"></div></div>
+ </div><div class="settings-group"><div class="settings-group-title">About</div><div class="panel"><h3>About MOVAI</h3><p class="muted">MOVAI uses TMDB for discovery and metadata. It is not affiliated with TMDB. TMDB does not provide movie or TV video files. Use official streaming services or add authorized direct/embed URLs in Player.</p><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener" style="color:var(--green)">Get a TMDB API key ↗</a></div></div>
 </section>
 <div class="footer">MOVAI · Independent media companion. This product uses the TMDB API but is not endorsed or certified by TMDB.</div>
 </main>
 <nav class="bottom-nav" aria-label="Main navigation">
  <button class="active" data-page="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
  <button data-page="search" aria-label="Search"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><small>Search</small></button>
- <button data-page="movies" aria-label="Movies"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4m-4 8h4m10-8h4m-4 8h4"/></svg></span><small>Movies</small></button>
- <button data-page="watchlist" aria-label="My list"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.8 2.8Z"/></svg></span><small>My List</small></button>
- <details class="nav-more"><summary aria-label="More navigation"><span class="nav-icon">•••</span><small>More</small></summary><div class="nav-more-panel">
-  <button data-page="tv"><span>▣</span> Series</button>
-  <button data-page="player"><span>▶</span> Player</button>
-  <button data-page="downloads"><span>↓</span> Downloads</button>
-  <button data-page="settings"><span>⚙</span> Settings</button>
- </div></details>
+ <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 4V2h8v2M8 9h8M8 13h8"/></svg></span><small>Library</small></button>
+ <button data-page="settings" aria-label="Profile"><span class="nav-icon profile-nav-icon">M</span><small>Profile</small></button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
 <script>
@@ -697,6 +759,8 @@ function page(id){
 window.movaiNavigate=page;
 
 document.addEventListener('click',e=>{
+ const settingNav=e.target.closest('[data-open-page]');
+ if(settingNav){e.preventDefault();page(settingNav.dataset.openPage);return}
  const nav=e.target.closest('.bottom-nav [data-page]');
  if(nav){e.preventDefault();page(nav.dataset.page);const more=document.querySelector('.nav-more');if(more)more.open=false;return}
  const go=e.target.closest('[data-go]');
@@ -810,6 +874,7 @@ async function search(q){
  catch(e){$('searchGrid').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}
 }
 if($('searchForm'))$('searchForm').onsubmit=e=>{e.preventDefault();const q=$('searchInput').value.trim();if(q)search(q)};
+if($('searchFormMobile'))$('searchFormMobile').onsubmit=e=>{e.preventDefault();const q=$('searchInputMobile').value.trim();if(q)search(q)};
 function isSaved(id,type){return watchlist.some(x=>String(x.id)===String(id)&&x.type===type)}
 function toggleWatch(item){
  const i=watchlist.findIndex(x=>String(x.id)===String(item.id)&&x.type===item.type);
