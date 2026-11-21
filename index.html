@@ -674,6 +674,20 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 .title-sources-empty{padding:15px;font-size:12px}
 @media(max-width:420px){.title-source-fields{grid-template-columns:1fr}.title-source-fields input:last-child{grid-column:auto}.title-source-row{align-items:flex-start;flex-direction:column}.title-source-actions{width:100%}.title-source-actions button:first-child{flex:1}}
 
+
+/* MOVAI provider hub — manifest + repository managers */
+.provider-hub{margin:16px 0;background:#0a0b12;border:1px solid #302943;border-radius:18px;padding:16px}
+.provider-hub h3{margin:0 0 6px;font-size:16px}.provider-hub p{font-size:12px;line-height:1.55;color:#aaa4b8}
+.provider-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:10px 0}
+.provider-list{display:grid;gap:8px;margin-top:12px}
+.provider-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #302943;border-radius:12px;background:#100e19;min-width:0}
+.provider-item-main{min-width:0;flex:1}.provider-item strong{display:block;font-size:12px;overflow-wrap:anywhere}.provider-item small{display:block;color:#9c96aa;font-size:10px;overflow-wrap:anywhere}
+.provider-item button{padding:7px 10px;border:1px solid #49385f;border-radius:9px;background:#211832;color:#e8dcff;font-size:11px}
+.provider-hub .status{font-size:11px}
+.provider-test-results{display:grid;gap:7px;margin-top:10px}
+.provider-test-results button{display:flex;justify-content:space-between;gap:8px;text-align:left;padding:10px;border:1px solid #423456;border-radius:11px;background:#171222;color:#eee5ff}
+.provider-test-results small{color:#b8a8cd}
+
 </style>
 </head>
 <body>
@@ -737,7 +751,27 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 <section id="downloads" class="page"><div class="section-head"><div><h2>Downloads</h2><small id="downloadCount">0 items in queue</small></div><button class="text-link" id="clearDownloadQueue">Clear queue</button></div><div class="panel download-panel"><div class="download-head"><div><span class="rank-eyebrow">OFFLINE LIBRARY</span><h3>Your download manager</h3></div><span class="download-status">QUEUE</span></div><p class="download-note">Queue items are saved on this device. Actual transfer, pause/resume and completed-file tracking are controlled by your browser; full in-app transfer controls require Android download integration.</p><div class="download-toolbar" id="downloadFilters"><button class="active" data-filter="all">All</button><button data-filter="queued">Queued</button><button data-filter="opened">Opened</button></div><div class="download-list" id="downloadList"><div class="empty">Your download queue is empty. Check a source in Player and add it here.</div></div></div></section><section id="settings" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">MOVAI PROFILE</div><h1>Settings</h1></div></div>
  <div class="settings-group"><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Download queue, quality and storage</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Player, subtitles and playback controls</small></span><span class="settings-arrow">›</span></button></div>
 <div class="settings-group"><div class="settings-group-title">Content & Discovery</div><div class="panel"><h3>TMDB connection</h3><p class="muted">Paste your TMDB API Read Access Token. It is stored only in this browser on this device.</p><label for="tmdbKey" class="muted">TMDB API Read Access Token (Bearer)</label><input class="field" id="tmdbKey" placeholder="Paste your TMDB Read Access Token" autocomplete="off"><div class="actions"><button class="primary" id="saveKey">Save API key</button><button class="secondary" id="clearKey">Remove key</button></div><div id="keyStatus" class="status"></div></div>
- </div><div class="settings-group"><div class="settings-group-title">About</div><div class="panel"><h3>About MOVAI</h3><p class="muted">MOVAI uses TMDB for discovery and metadata. It is not affiliated with TMDB. TMDB does not provide movie or TV video files. Use official streaming services or add authorized direct/embed URLs in Player.</p><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener" style="color:var(--green)">Get a TMDB API key ↗</a></div></div>
+ </div>
+ <div class="settings-group"><div class="settings-group-title">Sources & Extensions</div>
+ <div class="provider-hub">
+  <h3>Manifest Manager</h3><p>Add compatible Stremio-style add-on manifest URLs. MOVAI validates and stores manifests, then can request stream results for an IMDb ID.</p>
+  <div class="provider-row"><input class="field" id="manifestUrl" type="url" placeholder="https://provider.example/manifest.json"><button class="primary" id="addManifest">Add</button></div>
+  <div id="manifestStatus" class="status">Only add trusted HTTPS manifests from providers you are authorized to use.</div>
+  <div id="manifestList" class="provider-list"></div>
+  <div class="panel" style="padding:12px 0;border:0">
+   <h3>Test manifest streams</h3><p>Enter an IMDb ID (for example tt0133093) and media type to request results from installed manifests.</p>
+   <div class="provider-row"><input class="field" id="manifestImdb" placeholder="IMDb ID · tt0133093"><select class="field" id="manifestType" style="max-width:110px"><option value="movie">Movie</option><option value="series">Series</option></select><button class="secondary" id="testManifests">Find</button></div>
+   <div id="manifestResults" class="provider-test-results"></div>
+  </div>
+ </div>
+ <div class="provider-hub">
+  <h3>Repository Manager</h3><p>Add Cloudstream-style repository index URLs to discover extension metadata. Repository entries are listed for review; arbitrary third-party code is not silently executed inside MOVAI.</p>
+  <div class="provider-row"><input class="field" id="repositoryUrl" type="url" placeholder="https://repo.example/repo.json"><button class="primary" id="addRepository">Add</button></div>
+  <div id="repositoryStatus" class="status">Use repository URLs from sources you trust.</div>
+  <div id="repositoryList" class="provider-list"></div>
+ </div>
+ </div>
+<div class="settings-group"><div class="settings-group-title">About</div><div class="panel"><h3>About MOVAI</h3><p class="muted">MOVAI uses TMDB for discovery and metadata. It is not affiliated with TMDB. TMDB does not provide movie or TV video files. Use official streaming services or add authorized direct/embed URLs in Player.</p><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener" style="color:var(--green)">Get a TMDB API key ↗</a></div></div>
 </section>
 <div class="footer">MOVAI · Independent media companion. This product uses the TMDB API but is not endorsed or certified by TMDB.</div>
 </main>
@@ -1260,6 +1294,79 @@ async function initData(){
 }
 renderContinue();renderWatchlist();renderDownloadQueue();
 initData();
+
+/* MOVAI Manifest + Repository support */
+const MANIFEST_STORE='movai_manifests_v1',REPOSITORY_STORE='movai_repositories_v1';
+let installedManifests=readStore(MANIFEST_STORE,[]),installedRepositories=readStore(REPOSITORY_STORE,[]);
+if(!Array.isArray(installedManifests))installedManifests=[];
+if(!Array.isArray(installedRepositories))installedRepositories=[];
+function safeHttpsUrl(value){try{const u=new URL(String(value||'').trim());return u.protocol==='https:'?u.href:''}catch(e){return ''}}
+function manifestBase(url){return url.replace(/\\/$/,'')}
+function renderProviderLists(){
+ const ml=$('manifestList'),rl=$('repositoryList');
+ if(ml)ml.innerHTML=installedManifests.length?installedManifests.map((m,i)=>'<div class="provider-item"><div class="provider-item-main"><strong>'+esc(m.name||m.id||'Stremio add-on')+'</strong><small>'+esc(m.url)+' · '+esc(m.version||'manifest')+'</small></div><button data-remove-manifest="'+i+'">Remove</button></div>').join(''):'<div class="empty">No manifests installed.</div>';
+ if(rl)rl.innerHTML=installedRepositories.length?installedRepositories.map((r,i)=>'<div class="provider-item"><div class="provider-item-main"><strong>'+esc(r.name||'Extension repository')+'</strong><small>'+esc(r.url)+' · '+(r.plugins?.length||0)+' extensions found</small></div><button data-remove-repository="'+i+'">Remove</button></div>').join(''):'<div class="empty">No repositories added.</div>';
+ document.querySelectorAll('[data-remove-manifest]').forEach(b=>b.onclick=()=>{installedManifests.splice(Number(b.dataset.removeManifest),1);writeStore(MANIFEST_STORE,installedManifests);renderProviderLists()});
+ document.querySelectorAll('[data-remove-repository]').forEach(b=>b.onclick=()=>{installedRepositories.splice(Number(b.dataset.removeRepository),1);writeStore(REPOSITORY_STORE,installedRepositories);renderProviderLists()});
+}
+async function addStremioManifest(){
+ const url=safeHttpsUrl($('manifestUrl')?.value),status=$('manifestStatus');
+ if(!url){setStatus(status,'Enter a valid HTTPS manifest URL.','error');return}
+ if(installedManifests.some(x=>x.url===url)){setStatus(status,'This manifest is already installed.','error');return}
+ setStatus(status,'Checking manifest…');
+ try{
+  const response=await fetch(url,{headers:{Accept:'application/json'}});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const data=await response.json();
+  if(!data||typeof data!=='object'||!data.id||!Array.isArray(data.resources))throw new Error('This does not look like a compatible Stremio manifest.');
+  const item={url,name:data.name||data.id,id:data.id,version:data.version||'',description:data.description||'',resources:data.resources,types:data.types||[],catalogs:data.catalogs||[],addedAt:new Date().toISOString()};
+  installedManifests.push(item);writeStore(MANIFEST_STORE,installedManifests);$('manifestUrl').value='';renderProviderLists();
+  setStatus(status,'Manifest added: '+item.name+'. '+item.resources.length+' resource types detected.','ok');
+ }catch(e){setStatus(status,'Could not add manifest: '+(e.message||'network/CORS error')+'. The host must allow browser requests (CORS).','error')}
+}
+async function addCloudstreamRepository(){
+ const url=safeHttpsUrl($('repositoryUrl')?.value),status=$('repositoryStatus');
+ if(!url){setStatus(status,'Enter a valid HTTPS repository index URL.','error');return}
+ if(installedRepositories.some(x=>x.url===url)){setStatus(status,'This repository is already added.','error');return}
+ setStatus(status,'Reading repository index…');
+ try{
+  const response=await fetch(url,{headers:{Accept:'application/json'}});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const data=await response.json();
+  if(!data||typeof data!=='object')throw new Error('Invalid repository JSON.');
+  const raw=Array.isArray(data.plugins)?data.plugins:Array.isArray(data.extensions)?data.extensions:Array.isArray(data)?data:[];
+  const plugins=raw.map(p=>({name:p.name||p.pluginName||p.id||'Unnamed extension',url:p.url||p.pluginUrl||p.downloadURL||'',version:p.version||'',description:p.description||'',language:p.language||'',authors:p.authors||''}));
+  const item={url,name:data.name||data.repository||new URL(url).hostname,plugins,addedAt:new Date().toISOString()};
+  installedRepositories.push(item);writeStore(REPOSITORY_STORE,installedRepositories);$('repositoryUrl').value='';renderProviderLists();
+  setStatus(status,'Repository added. '+plugins.length+' extension entries discovered. Entries are metadata only; MOVAI does not execute unreviewed repository code.','ok');
+ }catch(e){setStatus(status,'Could not read repository: '+(e.message||'network/CORS error')+'. The host must allow browser requests (CORS).','error')}
+}
+async function queryInstalledManifestStreams(){
+ const imdb=String($('manifestImdb')?.value||'').trim(),type=$('manifestType')?.value||'movie',target=$('manifestResults');
+ if(!/^tt\\d{7,10}$/.test(imdb)){if(target)target.innerHTML='<div class="empty">Enter a valid IMDb ID, such as tt0133093.</div>';return}
+ if(!target)return;
+ target.innerHTML='<div class="empty">Checking installed manifests…</div>';
+ const results=[];
+ for(const m of installedManifests){
+  if(m.types?.length&&!m.types.includes(type))continue;
+  if(!m.resources?.some(r=>r==='stream'||(typeof r==='object'&&r.name==='stream')))continue;
+  try{
+   const endpoint=manifestBase(m.url)+'/stream/'+type+'/'+encodeURIComponent(imdb)+'.json';
+   const response=await fetch(endpoint,{headers:{Accept:'application/json'}});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const data=await response.json();
+   (data.streams||[]).forEach(s=>results.push({addon:m.name,title:s.title||s.name||'Stream',url:s.url||s.externalUrl||'',infoHash:s.infoHash||'',behaviorHints:s.behaviorHints||{}}));
+  }catch(e){results.push({addon:m.name,title:'Unavailable: '+(e.message||'request failed'),url:''})}
+ }
+ const playable=results.filter(x=>x.url);
+ target.innerHTML=results.length?results.map((s,i)=>'<button data-manifest-result="'+i+'"><span><strong>'+esc(s.title)+'</strong><br><small>'+esc(s.addon)+(s.infoHash?' · Torrent infoHash':'')+'</small></span><small>'+(s.url?'Open in player':'Unavailable')+'</small></button>').join(''):'<div class="empty">No stream results returned. Check the IMDb ID, add-ons and provider permissions.</div>';
+ target.querySelectorAll('[data-manifest-result]').forEach((b)=>{const s=results[Number(b.dataset.manifestResult)];b.onclick=()=>{if(!s.url)return;if(!/^https:\\/\\//i.test(s.url)){setStatus($('manifestStatus'),'This result is not a direct HTTPS URL; external handlers are not enabled.','error');return}page('player');$('videoUrl').value=s.url;$('sourceName').value=s.addon+' · '+s.title;playUrl(s.url)}});
+}
+if($('addManifest'))$('addManifest').onclick=addStremioManifest;
+if($('addRepository'))$('addRepository').onclick=addCloudstreamRepository;
+if($('testManifests'))$('testManifests').onclick=queryInstalledManifestStreams;
+renderProviderLists();
+
 </script>
 </body>
 </html>
