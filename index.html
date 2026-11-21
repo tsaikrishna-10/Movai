@@ -1301,7 +1301,7 @@ let installedManifests=readStore(MANIFEST_STORE,[]),installedRepositories=readSt
 if(!Array.isArray(installedManifests))installedManifests=[];
 if(!Array.isArray(installedRepositories))installedRepositories=[];
 function safeHttpsUrl(value){try{const u=new URL(String(value||'').trim());return u.protocol==='https:'?u.href:''}catch(e){return ''}}
-function manifestBase(url){return url.replace(/\\/$/,'')}
+function manifestBase(url){return url.replace(/\/+$/,'')}
 function renderProviderLists(){
  const ml=$('manifestList'),rl=$('repositoryList');
  if(ml)ml.innerHTML=installedManifests.length?installedManifests.map((m,i)=>'<div class="provider-item"><div class="provider-item-main"><strong>'+esc(m.name||m.id||'Stremio add-on')+'</strong><small>'+esc(m.url)+' · '+esc(m.version||'manifest')+'</small></div><button data-remove-manifest="'+i+'">Remove</button></div>').join(''):'<div class="empty">No manifests installed.</div>';
@@ -1360,7 +1360,7 @@ async function queryInstalledManifestStreams(){
  }
  const playable=results.filter(x=>x.url);
  target.innerHTML=results.length?results.map((s,i)=>'<button data-manifest-result="'+i+'"><span><strong>'+esc(s.title)+'</strong><br><small>'+esc(s.addon)+(s.infoHash?' · Torrent infoHash':'')+'</small></span><small>'+(s.url?'Open in player':'Unavailable')+'</small></button>').join(''):'<div class="empty">No stream results returned. Check the IMDb ID, add-ons and provider permissions.</div>';
- target.querySelectorAll('[data-manifest-result]').forEach((b)=>{const s=results[Number(b.dataset.manifestResult)];b.onclick=()=>{if(!s.url)return;if(!/^https:\\/\\//i.test(s.url)){setStatus($('manifestStatus'),'This result is not a direct HTTPS URL; external handlers are not enabled.','error');return}page('player');$('videoUrl').value=s.url;$('sourceName').value=s.addon+' · '+s.title;playUrl(s.url)}});
+ target.querySelectorAll('[data-manifest-result]').forEach((b)=>{const s=results[Number(b.dataset.manifestResult)];b.onclick=()=>{if(!s.url)return;if(!s.url.startsWith('https://')){setStatus($('manifestStatus'),'This result is not a direct HTTPS URL; external handlers are not enabled.','error');return}page('player');$('videoUrl').value=s.url;$('sourceName').value=s.addon+' · '+s.title;playUrl(s.url)}});
 }
 if($('addManifest'))$('addManifest').onclick=addStremioManifest;
 if($('addRepository'))$('addRepository').onclick=addCloudstreamRepository;
