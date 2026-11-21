@@ -551,6 +551,12 @@ body{background:#050307!important;color:#f7f3fa!important}
 .download-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .download-actions button{padding:9px 12px;font-size:12px}
 
+/* Download metadata grid expansion */
+
+.download-meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+.download-meta>div{background:#0a070e!important;border:1px solid #34243d!important}
+#downloadNote{line-height:1.55}
+@media(min-width:700px){.download-meta{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -593,6 +599,11 @@ body{background:#050307!important;color:#f7f3fa!important}
    <div><small>Format</small><strong id="downloadFormat">—</strong></div>
    <div><small>File size</small><strong id="downloadSize">Checking host…</strong></div>
    <div><small>Quality</small><strong id="downloadQuality">Not provided</strong></div>
+   <div><small>Resolution</small><strong id="downloadResolution">Not available</strong></div>
+   <div><small>Duration</small><strong id="downloadDuration">Not available</strong></div>
+   <div><small>Estimated bitrate</small><strong id="downloadBitrate">Not available</strong></div>
+   <div><small>Video / audio codec</small><strong id="downloadCodecs">Not exposed by browser</strong></div>
+   <div><small>Download support</small><strong id="downloadSupport">Checking</strong></div>
    <div class="download-url-row"><small>Source</small><strong id="downloadSource">—</strong></div>
   </div>
   <p class="muted" id="downloadNote">File details depend on the source server.</p>
@@ -899,16 +910,29 @@ function filenameFromUrl(url){
 function showDownloadDetails(url,meta){
  const box=$('downloadDetails');if(!box)return;
  const name=meta.name||filenameFromUrl(url),type=meta.type||name.split('.').pop()||'Unknown';
- const quality=(name.match(/(?:2160|1440|1080|720|480)p/i)||[])[0]||'Not provided';
+ const quality=meta.resolution||((name.match(/(?:2160|1440|1080|720|480)p/i)||[])[0])||'Not verified';
  $('downloadTitle').textContent=$('sourceName').value.trim()||name;
  $('downloadName').textContent=name;
  $('downloadFormat').textContent=String(type).replace(/^video\//i,'').toUpperCase();
  $('downloadSize').textContent=meta.size||'Not provided by host';
  $('downloadQuality').textContent=quality;
+ $('downloadResolution').textContent=meta.resolution||'Not exposed';
+ $('downloadDuration').textContent=meta.duration||'Not exposed';
+ $('downloadBitrate').textContent=meta.bitrate||'Cannot estimate';
+ $('downloadCodecs').textContent=meta.codecs||'Not exposed by browser';
+ $('downloadSupport').textContent=meta.support||'Direct-file check only';
  $('downloadSource').textContent=new URL(url).host;
- $('downloadStatus').textContent=meta.verified?'DETAILS FOUND':'LIMITED DETAILS';
- $('downloadNote').textContent=meta.note||'Quality and size are shown only when the source server exposes them. The host may still block or redirect downloads.';
+ $('downloadStatus').textContent=meta.verified?'SOURCE RESPONDS':'LIMITED DETAILS';
+ $('downloadNote').textContent=meta.note||'Details are shown only when the source server/browser exposes them. Resolution, codecs and bitrate are never guessed.';
  checkedDownloadUrl=url;window.checkedDownloadMeta={url,name,type,size:meta.size||'Not provided',quality,source:new URL(url).host};$('confirmDownloadBtn').disabled=false;box.classList.remove('hidden');
+}
+function probeVideoMetadata(url){
+ return new Promise(resolve=>{
+  const v=document.createElement('video');v.preload='metadata';v.muted=true;v.crossOrigin='anonymous';
+  const finish=()=>{const w=v.videoWidth,h=v.videoHeight,d=v.duration;resolve({resolution:w&&h?(w+' × '+h+' ('+(h>=2160?'4K':h>=1440?'1440p':h>=1080?'1080p':h>=720?'720p':h>=480?'480p':'SD')+')'):null,duration:Number.isFinite(d)?formatPlayerTime(d):null});v.removeAttribute('src');v.load()};
+  v.onloadedmetadata=finish;v.onerror=()=>resolve({});v.src=url;
+  setTimeout(()=>resolve({}),9000);
+ });
 }
 if($('downloadUrlBtn'))$('downloadUrlBtn').onclick=async()=>{
  const u=$('videoUrl').value.trim(),box=$('downloadDetails');
@@ -920,8 +944,14 @@ if($('downloadUrlBtn'))$('downloadUrlBtn').onclick=async()=>{
   const match=cd.match(/filename\*?=(?:UTF-8''|\")?([^;\"]+)/i);
   const name=match?decodeURIComponent(match[1].replace(/\"$/,'')):filenameFromUrl(u);
   const mime=response.headers.get('content-type')||'',length=response.headers.get('content-length');
-  showDownloadDetails(u,{name,type:mime||name.split('.').pop(),size:length?humanFileSize(length):'Not provided by host',verified:response.ok,note:response.ok?'Metadata returned by the source server.':'The source returned limited metadata.'});
-  setStatus($('playerStatus'),'Source checked. Review the file details before opening the download.','ok');
+  const size=length?humanFileSize(length):'Not provided by host';
+  const media=await probeVideoMetadata(u);
+  const bytes=Number(length),seconds=media.duration?media.duration.split(':').reduce((a,x)=>a*60+Number(x),0):0;
+  const bitrate=bytes>0&&seconds>0?((bytes*8/seconds)/1000000).toFixed(2)+' Mbps (approx.)':'Cannot estimate';
+  showDownloadDetails(u,{name,type:mime||name.split('.').pop(),size,verified:response.ok,resolution:media.resolution,duration:media.duration,bitrate,note:'Source headers and browser media metadata checked. Codec details may be hidden by the host/browser; quality is marked unverified when dimensions are unavailable.'});
+  $('downloadCodecs').textContent='Not reliably exposed by browser';
+  $('downloadSupport').textContent=/^video\//i.test(mime)||/\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(u)?'Direct video URL':'Verify direct-file URL';
+  setStatus($('playerStatus'),'Source checked. Review all available file details before downloading.','ok');
  }catch(e){
   const name=filenameFromUrl(u);
   showDownloadDetails(u,{name,type:name.split('.').pop()||'Unknown',size:'Unavailable (host blocked metadata)',verified:false,note:'This server blocks browser metadata checks (often CORS). Filename is inferred from the URL; size and quality cannot be verified.'});
