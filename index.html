@@ -153,6 +153,132 @@ body{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 }
 @media(max-width:360px){.app-header{gap:9px}.brand{font-size:21px}.header-search input{font-size:12px}}
 
+
+/* KRXNU 3.0 — mobile-first cinematic homepage */
+:root{
+ --bg:#030604;--surface:#080e09;--surface2:#0d1710;--line:#24372a;
+ --muted:#91a095;--text:#f2f6f2;--green:#315b3c;--navh:66px;
+}
+html{background:#030604}
+body{background:radial-gradient(ellipse at 50% -15%,#132318 0%,#030604 48%);color:var(--text)}
+.app-header{
+ height:62px;padding:0 16px;gap:14px;
+ background:rgba(3,7,4,.94);border-bottom:1px solid #243629;
+ box-shadow:0 8px 24px #0005;
+}
+.brand{font-size:25px;letter-spacing:-1.7px;font-weight:900}
+.brand span{color:#88a58d}
+.header-search{max-width:520px}
+.header-search input{
+ height:42px;border-radius:14px;background:#0a110c;border-color:#2a3d2e;
+ color:#edf3ee;font-size:13px;padding-left:38px;
+}
+.search-symbol{font-size:22px;color:#91a397}
+.search-submit{width:34px;height:34px;top:4px;right:4px;border-radius:11px}
+.wrap{padding-top:0;padding-left:0;padding-right:0;max-width:1200px}
+#home{overflow:hidden}
+.hero{
+ min-height:0;height:clamp(470px,70svh,610px);
+ margin:0 0 26px;padding:24px 22px 32px;
+ border:0;border-radius:0 0 26px 26px;
+ background-color:#050906;background-position:center 22%;background-size:cover;
+ align-items:flex-end;
+}
+.hero:before{
+ z-index:0;
+ background:linear-gradient(0deg,#030604 0%,rgba(3,6,4,.88) 15%,rgba(3,6,4,.38) 52%,rgba(3,6,4,.08) 100%),
+ linear-gradient(90deg,rgba(2,5,3,.58),transparent 90%);
+}
+.hero-copy{position:relative;z-index:2;max-width:620px;width:100%}
+.hero .eyebrow{
+ padding:7px 12px;font-size:10px;letter-spacing:2px;
+ border:1px solid #78947d55;background:rgba(7,15,9,.72);
+ color:#a8c5ad;border-radius:999px;
+}
+.hero h1{
+ max-width:620px;margin:15px 0 12px;
+ font-size:clamp(40px,8vw,68px);line-height:.98;
+ letter-spacing:-2.7px;font-weight:850;
+}
+.hero p{max-width:540px;margin:0;color:#c1ccc3;font-size:14px;line-height:1.65}
+.hero .actions{gap:10px;margin-top:20px}
+.hero .actions button{min-height:48px;padding:0 19px;border-radius:14px;font-size:14px}
+.hero .primary{background:linear-gradient(135deg,#294b32,#14291a);border:1px solid #45674b}
+.hero .secondary{background:rgba(8,15,10,.8);border:1px solid #526456}
+.hero-mark{display:none}
+.home-dock{display:none!important}
+#home>.section-head,#home>.rank-section{
+ margin-left:20px;margin-right:20px;
+}
+#home>.section-head{margin-top:24px;margin-bottom:13px}
+.section-head h2,.rank-heading h2{color:#eef3ef;font-weight:800;letter-spacing:-.8px}
+.section-head small,.muted{color:#8d9d91}
+.text-link{color:#9ab39e}
+.continue-rail{grid-auto-columns:minmax(250px,290px);gap:12px}
+.continue-card{min-height:150px;border-radius:17px;background:#0a120c;border-color:#293d2e}
+.continue-content{min-height:150px}
+.rank-section{margin-top:34px!important;margin-bottom:34px!important}
+.rank-rail{grid-auto-columns:minmax(245px,72vw);gap:14px}
+.rank-card{min-height:230px;padding-left:42px}
+.rank-art{height:190px;border-radius:17px;background-color:#0b140e}
+.rank-number{font-size:clamp(140px,32vw,190px);color:#030604;-webkit-text-stroke:1.5px #637c68}
+.rank-info{left:54px;bottom:20px}
+.rank-title{font-size:15px}
+.rail,.rank-rail{scrollbar-width:none}
+.rail::-webkit-scrollbar,.rank-rail::-webkit-scrollbar{display:none}
+.card{border-radius:15px;border-color:#243629;background:#09100b}
+.bottom-nav{
+ left:50%;right:auto;bottom:calc(9px + env(safe-area-inset-bottom));
+ transform:translateX(-50%);width:min(680px,calc(100% - 24px));
+ height:64px;padding:5px 7px;gap:3px;
+ border:1px solid #3a4d3e;border-radius:20px;
+ background:rgba(7,12,8,.94);backdrop-filter:blur(24px);
+ box-shadow:0 12px 38px #000b,inset 0 1px #ffffff0b;
+}
+.bottom-nav button{gap:3px;border-radius:14px;color:#8f9c91}
+.bottom-nav button .nav-icon{width:22px;height:22px}
+.bottom-nav button .nav-icon svg{width:20px;height:20px;stroke-width:1.7}
+.bottom-nav button small{font-size:9px}
+.bottom-nav button.active{background:#1a2d1e;color:#e6f0e7}
+.bottom-nav button.active:before{background:#a4c5aa;width:17px}
+body{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+@media(min-width:701px){
+ .app-header{padding-left:max(24px,calc((100vw - 1160px)/2));padding-right:max(24px,calc((100vw - 1160px)/2))}
+ .hero{height:min(650px,72svh);margin-bottom:32px;padding-left:max(28px,calc((100vw - 1120px)/2));padding-right:max(28px,calc((100vw - 1120px)/2))}
+ #home>.section-head,#home>.rank-section{margin-left:28px;margin-right:28px}
+}
+@media(max-width:420px){
+ .app-header{height:60px;padding:0 13px;gap:11px}
+ .brand{font-size:23px;letter-spacing:-1.5px}
+ .header-search input{height:40px;font-size:12px;padding-left:34px;padding-right:40px}
+ .search-symbol{left:10px;font-size:21px}
+ .search-submit{width:32px;height:32px;top:4px;right:4px}
+ .hero{height:clamp(455px,67svh,545px);padding:20px 19px 28px;margin-bottom:22px;background-position:58% center}
+ .hero h1{font-size:clamp(38px,10vw,46px);letter-spacing:-2px}
+ .hero p{font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+ .hero .actions button{min-height:45px;padding:0 16px;font-size:13px}
+ #home>.section-head,#home>.rank-section{margin-left:16px;margin-right:16px}
+ .section-head h2{font-size:19px}
+ .rank-section{margin-top:29px!important;margin-bottom:30px!important}
+ .rank-rail{grid-auto-columns:80vw}
+ .rank-card{min-height:218px}
+ .rank-art{height:178px}
+ .rank-number{font-size:150px}
+ .rank-info{left:52px;bottom:19px}
+ .bottom-nav{width:calc(100% - 20px);height:62px;bottom:calc(7px + env(safe-area-inset-bottom));padding:4px 5px;gap:1px}
+ .bottom-nav button{gap:2px}
+ .bottom-nav button .nav-icon{width:20px;height:20px}
+ .bottom-nav button .nav-icon svg{width:18px;height:18px}
+ .bottom-nav button small{font-size:8px}
+}
+@media(max-width:350px){
+ .brand{font-size:21px}
+ .app-header{gap:8px}
+ .hero{height:460px}
+ .hero p{-webkit-line-clamp:4}
+ .bottom-nav button small{font-size:7px}
+}
+
 </style>
 </head>
 <body>
