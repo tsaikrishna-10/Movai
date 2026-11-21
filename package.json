@@ -2,7 +2,7 @@
   "name": "movai",
   "version": "0.2.0",
   "private": true,
-  "description": "TMDB-powered discovery and personal video player",
+  "description": "MOVAI — cinematic discovery, watchlists, playback and downloads",
   "scripts": {
     "start": "npx serve .",
     "cap:add:android": "npx cap add android",
