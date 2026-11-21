@@ -1343,7 +1343,7 @@ async function addCloudstreamRepository(){
 }
 async function queryInstalledManifestStreams(){
  const imdb=String($('manifestImdb')?.value||'').trim(),type=$('manifestType')?.value||'movie',target=$('manifestResults');
- if(!/^tt\\d{7,10}$/.test(imdb)){if(target)target.innerHTML='<div class="empty">Enter a valid IMDb ID, such as tt0133093.</div>';return}
+ if(!/^tt[0-9]{7,10}$/.test(imdb)){if(target)target.innerHTML='<div class="empty">Enter a valid IMDb ID, such as tt0133093.</div>';return}
  if(!target)return;
  target.innerHTML='<div class="empty">Checking installed manifests…</div>';
  const results=[];
