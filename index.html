@@ -654,6 +654,26 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 #settings .status{margin-top:10px}
 @media(max-width:420px){.bottom-nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:calc(100% - 28px)!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;height:62px!important;border-radius:19px!important}}
 
+
+/* Title download source integration */
+.title-download-panel{border:1px solid #29402f!important;border-radius:18px!important;background:linear-gradient(145deg,#0b140d,#060a07)!important;padding:17px!important;margin:16px 0!important}
+.title-source-help{font-size:12px;line-height:1.55}
+.title-source-form{display:grid;gap:9px;margin:14px 0 16px}
+.title-source-form>.field,.title-source-fields .field{min-width:0;width:100%;background:#080f0a;border:1px solid #2a3b2e;border-radius:11px;color:#e7eee8;padding:11px}
+.title-source-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.title-source-fields input:last-child{grid-column:1/-1}
+.title-source-form button{justify-self:start}
+.title-source-list{display:grid;gap:9px}
+.title-source-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #26382b;border-radius:13px;background:#080f0a}
+.title-source-main{min-width:0;display:grid;gap:3px}
+.title-source-main strong{font-size:13px;overflow-wrap:anywhere}
+.title-source-main span,.title-source-main small{font-size:11px;color:#93a195;overflow-wrap:anywhere}
+.title-source-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.title-source-actions button{font-size:11px;padding:8px 10px;border-radius:9px}
+.title-source-actions button:last-child{min-width:34px;padding:8px}
+.title-sources-empty{padding:15px;font-size:12px}
+@media(max-width:420px){.title-source-fields{grid-template-columns:1fr}.title-source-fields input:last-child{grid-column:auto}.title-source-row{align-items:flex-start;flex-direction:column}.title-source-actions{width:100%}.title-source-actions button:first-child{flex:1}}
+
 </style>
 </head>
 <body>
@@ -912,6 +932,45 @@ function toggleWatch(item){
  const b=$('watchToggle');if(b)b.textContent=isSaved(item.id,item.type)?'♥ In My List':'＋ Add to My List';
 }
 function renderWatchlist(){const count=$('watchCount');if(count)count.textContent=watchlist.length+' titles';cards(watchlist,'watchGrid')}
+
+/* MOVAI title-specific authorized download source registry */
+function getTitleDownloadSources(){
+ try{const v=JSON.parse(localStorage.getItem('movai_title_download_sources')||'{}');return v&&typeof v==='object'?v:{}}catch(e){return {}}
+}
+function saveTitleDownloadSources(data){writeStore('movai_title_download_sources',data)}
+function renderTitleDownloadSources(id,type,title){
+ const all=getTitleDownloadSources(),key=type+':'+id,list=Array.isArray(all[key])?all[key]:[];
+ const rows=list.length?list.map(x=>'<div class="title-source-row"><div class="title-source-main"><strong>'+esc(x.label||title)+'</strong><span>'+esc(x.quality||'Quality not specified')+' · '+esc(x.size||'Size not supplied')+'</span><small>'+esc((()=>{try{return new URL(x.url).host}catch(e){return 'Source URL'}})())+'</small></div><div class="title-source-actions"><button class="primary" data-title-source-queue="'+esc(x.id)+'" data-title-source-key="'+esc(key)+'">Add to queue</button><button class="secondary" data-title-source-remove="'+esc(x.id)+'" data-title-source-key="'+esc(key)+'" aria-label="Remove source">×</button></div></div>').join(''):'<div class="empty title-sources-empty">No download sources added for this title yet.</div>';
+ return '<section class="panel title-download-panel"><div class="download-head"><div><span class="rank-eyebrow">AUTHORIZED FILE LINKS</span><h3>Download sources</h3></div><span class="download-status">'+list.length+' SOURCES</span></div><p class="muted title-source-help">Add a direct download URL from a source you own or are licensed to use. MOVAI will show the quality and file details you provide; server metadata can be checked later in Player.</p><form class="title-source-form" id="titleSourceForm" data-title-source-key="'+esc(key)+'" data-title-source-title="'+esc(title)+'"><input class="field" name="url" type="url" required placeholder="https://example.com/movie-1080p.mp4" aria-label="Direct download URL"><div class="title-source-fields"><input class="field" name="label" placeholder="Source label (e.g. Official download)" aria-label="Source label"><select class="field" name="quality" aria-label="Video quality"><option value="Quality not specified">Quality not specified</option><option>2160p / 4K</option><option>1440p</option><option>1080p</option><option>720p</option><option>480p</option><option>Original</option></select><input class="field" name="size" placeholder="File size (optional, e.g. 2.4 GB)" aria-label="File size"></div><button class="primary" type="submit">＋ Save download source</button></form><div class="title-source-list">'+rows+'</div></section>';
+}
+function addTitleSourceToQueue(key,id){
+ const all=getTitleDownloadSources(),item=(all[key]||[]).find(x=>x.id===id);
+ if(!item)return;
+ if(typeof downloadQueue==='undefined')return;
+ if(downloadQueue.some(x=>x.url===item.url)){page('downloads');setStatus($('playerStatus'),'This source is already in your download queue.','ok');return}
+ const filename=filenameFromUrl(item.url);
+ downloadQueue.unshift({id:String(Date.now()),url:item.url,name:filename,title:item.title||item.label||filename,format:(filename.split('.').pop()||'FILE').toUpperCase(),size:item.size||'Not checked yet',quality:item.quality||'Quality not specified',source:new URL(item.url).host,status:'queued',addedAt:new Date().toISOString(),sourceLabel:item.label||''});
+ writeStore('movai_download_queue',downloadQueue);renderDownloadQueue();page('downloads');
+}
+document.addEventListener('submit',e=>{
+ const form=e.target.closest('#titleSourceForm');if(!form)return;
+ e.preventDefault();
+ const fd=new FormData(form),url=String(fd.get('url')||'').trim();
+ if(!/^https?:\\/\\//i.test(url)){return}
+ const key=form.dataset.titleSourceKey,all=getTitleDownloadSources(),list=Array.isArray(all[key])?all[key]:[];
+ if(list.some(x=>x.url===url)){form.querySelector('input[name="url"]').setCustomValidity('This source is already saved.');form.querySelector('input[name="url"]').reportValidity();return}
+ list.unshift({id:String(Date.now())+'-'+Math.random().toString(36).slice(2,7),url,label:String(fd.get('label')||'').trim(),quality:String(fd.get('quality')||''),size:String(fd.get('size')||'').trim(),title:form.dataset.titleSourceTitle||''});
+ all[key]=list;saveTitleDownloadSources(all);
+ const detail=$('detailContent'),holder=detail.querySelector('.title-download-panel');
+ if(holder){const tmp=document.createElement('div');tmp.innerHTML=renderTitleDownloadSources(key.split(':')[1],key.split(':')[0],form.dataset.titleSourceTitle);holder.replaceWith(tmp.firstElementChild)}
+});
+document.addEventListener('click',e=>{
+ const queue=e.target.closest('[data-title-source-queue]');
+ if(queue){addTitleSourceToQueue(queue.dataset.titleSourceKey,queue.dataset.titleSourceQueue);return}
+ const remove=e.target.closest('[data-title-source-remove]');
+ if(remove){const all=getTitleDownloadSources(),key=remove.dataset.titleSourceKey;all[key]=(all[key]||[]).filter(x=>x.id!==remove.dataset.titleSourceRemove);saveTitleDownloadSources(all);const title=$('detailContent').querySelector('#titleSourceForm')?.dataset.titleSourceTitle||'Title';const parts=key.split(':');const panel=$('detailContent').querySelector('.title-download-panel');if(panel){const tmp=document.createElement('div');tmp.innerHTML=renderTitleDownloadSources(parts[1],parts[0],title);panel.replaceWith(tmp.firstElementChild)}}
+});
+
 async function openDetail(id,type){
  lastPage=currentPage==='detail'?lastPage:currentPage;page('detail');$('detailContent').innerHTML='<div class="empty">Loading title details…</div>';
  try{
@@ -919,7 +978,7 @@ async function openDetail(id,type){
   const title=d.title||d.name,year=(d.release_date||d.first_air_date||'').slice(0,4),providers=d['watch/providers']?.results?.IN;
   const watch=[...(providers?.flatrate||[]),...(providers?.rent||[]),...(providers?.buy||[])];
   const item={id:d.id,type,title,poster_path:d.poster_path,backdrop_path:d.backdrop_path,release_date:d.release_date,first_air_date:d.first_air_date,vote_average:d.vote_average};
-  $('detailContent').innerHTML=`<div class="detail-hero" style="background-image:url('${d.backdrop_path?BACK+d.backdrop_path:''}')"><div class="detail-shade"><div class="detail-main"><img class="detail-poster" src="${d.poster_path?IMG+d.poster_path:'https://placehold.co/500x750/101810/9aa99e?text=No+Poster'}" alt="${esc(title)}"><div><div class="eyebrow">${type==='tv'?'TV SERIES':'MOVIE'}</div><h1>${esc(title)}</h1><div class="muted">${year} ${d.vote_average?' · ★ '+Number(d.vote_average).toFixed(1)+'/10':''} ${d.runtime?' · '+d.runtime+' min':''}</div><div class="pills">${(d.genres||[]).map(g=>`<span class="pill">${esc(g.name)}</span>`).join('')}</div><div class="actions"><button class="primary" id="detailPlayer">Open player</button><button class="secondary" id="watchToggle">${isSaved(id,type)?'♥ In My List':'＋ Add to My List'}</button></div></div></div></div></div><div class="detail-body"><div class="panel"><h3>Overview</h3><p>${esc(d.overview||'No overview available.')}</p>${d.homepage?`<a href="${esc(d.homepage)}" target="_blank" rel="noopener" style="color:var(--green)">Official page ↗</a>`:''}</div>${type==='tv'?`<div class="panel"><h3>Episode guide</h3><div class="season-row"><select class="field" id="seasonSelect">${(d.seasons||[]).filter(s=>s.season_number>=0).map(s=>`<option value="${s.season_number}">${esc(s.name)} · ${s.episode_count||0} episodes</option>`).join('')}</select><button class="primary" id="loadEpisodes">Load episodes</button></div><div id="episodeList" class="episode-list"></div></div>`:''}<div class="panel"><h3>Where to watch in India</h3><p class="muted">${watch.length?watch.map(p=>esc(p.provider_name)).filter((v,i,a)=>a.indexOf(v)===i).join(' · '):'TMDB has no India provider listing for this title.'}</p><small class="muted">Availability can change. Check the provider for current terms.</small></div><div class="panel"><h3>Cast</h3><p class="muted">${(d.credits?.cast||[]).slice(0,8).map(c=>esc(c.name)).join(' · ')||'Cast information unavailable.'}</p></div></div>`;
+  $('detailContent').innerHTML=`<div class="detail-hero" style="background-image:url('${d.backdrop_path?BACK+d.backdrop_path:''}')"><div class="detail-shade"><div class="detail-main"><img class="detail-poster" src="${d.poster_path?IMG+d.poster_path:'https://placehold.co/500x750/101810/9aa99e?text=No+Poster'}" alt="${esc(title)}"><div><div class="eyebrow">${type==='tv'?'TV SERIES':'MOVIE'}</div><h1>${esc(title)}</h1><div class="muted">${year} ${d.vote_average?' · ★ '+Number(d.vote_average).toFixed(1)+'/10':''} ${d.runtime?' · '+d.runtime+' min':''}</div><div class="pills">${(d.genres||[]).map(g=>`<span class="pill">${esc(g.name)}</span>`).join('')}</div><div class="actions"><button class="primary" id="detailPlayer">Open player</button><button class="secondary" id="watchToggle">${isSaved(id,type)?'♥ In My List':'＋ Add to My List'}</button></div></div></div></div></div><div class="detail-body"><div class="panel"><h3>Overview</h3><p>${esc(d.overview||'No overview available.')}</p>${d.homepage?`<a href="${esc(d.homepage)}" target="_blank" rel="noopener" style="color:var(--green)">Official page ↗</a>`:''}</div>${type==='tv'?`<div class="panel"><h3>Episode guide</h3><div class="season-row"><select class="field" id="seasonSelect">${(d.seasons||[]).filter(s=>s.season_number>=0).map(s=>`<option value="${s.season_number}">${esc(s.name)} · ${s.episode_count||0} episodes</option>`).join('')}</select><button class="primary" id="loadEpisodes">Load episodes</button></div><div id="episodeList" class="episode-list"></div></div>`:''}${renderTitleDownloadSources(id,type,title)}<div class="panel"><h3>Where to watch in India</h3><p class="muted">${watch.length?watch.map(p=>esc(p.provider_name)).filter((v,i,a)=>a.indexOf(v)===i).join(' · '):'TMDB has no India provider listing for this title.'}</p><small class="muted">Availability can change. Check the provider for current terms.</small></div><div class="panel"><h3>Cast</h3><p class="muted">${(d.credits?.cast||[]).slice(0,8).map(c=>esc(c.name)).join(' · ')||'Cast information unavailable.'}</p></div></div>`;
   $('detailPlayer').onclick=()=>page('player');$('watchToggle').onclick=()=>toggleWatch(item);
   if(type==='tv')$('loadEpisodes').onclick=()=>loadEpisodes(id,$('seasonSelect').value);
  }catch(e){$('detailContent').innerHTML='<div class="empty">'+esc(e.message)+'</div>'}
