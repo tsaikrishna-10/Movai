@@ -1,0 +1,6 @@
+{
+  "appId": "com.movai.app",
+  "appName": "Movai",
+  "webDir": ".",
+  "server": { "androidScheme": "https" }
+}
