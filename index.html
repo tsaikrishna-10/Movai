@@ -702,6 +702,8 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 
 .watchtime-panel{margin:18px 0 24px;padding:18px;border:1px solid #2a4030;border-radius:18px;background:linear-gradient(145deg,#0b140d,#060a07)}.watchtime-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.watchtime-head h2{font-size:22px;margin:3px 0 0}.watchtime-head>strong{font-size:22px;color:#dce9df}.watchtime-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}.watchtime-stats>div{padding:12px;border:1px solid #26392b;border-radius:12px;background:#080f0a}.watchtime-stats strong,.watchtime-stats small{display:block}.watchtime-stats strong{font-size:19px}.watchtime-stats small,.watchtime-note,.watchtime-item small{font-size:11px;color:var(--muted)}.watchtime-add{display:grid;grid-template-columns:1fr 120px;gap:9px}.watchtime-add input:first-child{grid-column:1/-1}.watchtime-add button{grid-column:1/-1}.watchtime-list{display:grid;gap:8px;margin-top:14px}.watchtime-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;background:#0c150e;border:1px solid #26392b;border-radius:12px}.watchtime-item strong,.watchtime-item small{display:block}.watchtime-item>strong{white-space:nowrap;color:#dce9df}.watchtime-note{line-height:1.5;margin:11px 0 0}@media(max-width:360px){.watchtime-add{grid-template-columns:1fr}.watchtime-add input:first-child,.watchtime-add button{grid-column:auto}}
 .movai-account-panel .watchtime-head{align-items:center}.movai-account-panel #googleSignInBtn,.movai-account-panel #googleSignOutBtn{margin-top:8px}.movai-account-panel #googleSignOutBtn{margin-left:8px}
+/* MOVAI cinematic home refresh */
+.home-categories{display:flex;gap:9px;overflow-x:auto;padding:4px 1px 15px;scrollbar-width:none}.home-categories::-webkit-scrollbar{display:none}.home-categories button{flex:0 0 auto;padding:10px 18px;border:1px solid #ffffff20;border-radius:999px;background:#17151d;color:#c9c5d1;font-size:13px;font-weight:750}.home-categories button.active,.home-categories button:focus-visible{background:#f3c94b;color:#17130a;border-color:#f3c94b}.hero{min-height:clamp(430px,68vh,650px);align-items:flex-end;padding:clamp(22px,5vw,42px);border-radius:25px;background:#100d18;border:1px solid #ffffff20;box-shadow:0 22px 55px #0008}.hero-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;z-index:0;opacity:.94}.hero:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,#08060cf7 0%,#08060cd9 27%,#08060c42 68%,#08060c12 100%),linear-gradient(90deg,#08060c88,transparent 85%);pointer-events:none}.hero-copy{position:relative;z-index:2;max-width:600px}.hero .eyebrow{display:inline-flex;padding:8px 12px;border:1px solid #ffffff28;border-radius:999px;background:#08060c99;color:#f3ca55;letter-spacing:1.6px}.hero h1{font-size:clamp(38px,8vw,66px);line-height:.98;letter-spacing:-2.5px;text-wrap:balance}.hero p{color:#e2dce8;max-width:520px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.hero .primary{background:#f2c94c;color:#18130a;border:0}.hero .secondary{background:#17131dcc;border:1px solid #ffffff38;color:#fff}.hero-mark{z-index:1;opacity:.3}.cinematic-section-head{margin-top:29px}.featured-rail{grid-auto-columns:minmax(150px,42vw);gap:13px}.featured-rail .poster{aspect-ratio:2/3}.rank-section{margin-top:32px}@media(max-width:600px){.wrap{padding:14px 14px 110px}.home-categories{margin:0 -1px 3px}.hero{min-height:500px;padding:22px 19px;border-radius:22px}.hero h1{font-size:clamp(38px,10vw,54px)}.hero p{font-size:14px;line-height:1.5}.hero .actions{gap:8px}.hero .actions button{padding:12px 15px}.featured-rail{grid-auto-columns:minmax(142px,43vw)}.section-head h2{font-size:21px}}
 </style>
 </head>
 <body>
@@ -711,13 +713,9 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 </header>
 <main class="wrap">
 <section id="home" class="page active">
+  <div class="home-categories" aria-label="Browse categories"><button class="active" type="button" data-go="home">For You</button><button type="button" data-go="movies">Movies</button><button type="button" data-go="tv">TV Shows</button><button type="button" data-go="watchlist">My List</button></div>
   <div class="hero" id="homeHero">
-    <div class="home-dock" aria-label="Quick navigation">
-      <button type="button" data-go="movies"><span>▣</span><small>Discover</small></button>
-      <button type="button" data-go="search"><span>⌕</span><small>Search</small></button>
-      <button type="button" data-go="watchlist"><span>♡</span><small>My List</small></button>
-      <button type="button" data-go="player"><span>▷</span><small>Player</small></button>
-    </div>
+    <img id="heroBackdrop" class="hero-backdrop" alt="" aria-hidden="true">
     <div class="hero-copy"><div class="eyebrow" id="heroEyebrow">YOUR NEXT GREAT WATCH STARTS HERE</div><h1 id="heroTitle">Stories worth<br>staying in for.</h1><p id="heroOverview">Discover films and series, follow your favourites and keep your personal watch space in one place.</p><div class="actions"><button class="primary" id="exploreBtn">Explore titles</button><button class="secondary" id="heroPlayerBtn">Open player</button></div></div>
     <div class="hero-mark">M</div>
   </div>
@@ -1087,7 +1085,7 @@ async function loadHome(){
    $('heroEyebrow').textContent='TRENDING NOW'+(year?' · '+year:'')+(featured.vote_average?' · ★ '+Number(featured.vote_average).toFixed(1):'');
    $('heroTitle').textContent=title;
    $('heroOverview').textContent=featured.overview||'Discover the stories everyone is watching right now.';
-   if(featured.backdrop_path)$('homeHero').style.backgroundImage=`linear-gradient(90deg,#080611f5 0%,#0a0719d9 43%,#09061155 100%),linear-gradient(0deg,#070611ee 0%,#07061144 52%,transparent 100%),url('${BACK+featured.backdrop_path}')`;
+   const backdrop=$('heroBackdrop');if(backdrop){backdrop.onerror=()=>{if(featured.poster_path&&backdrop.dataset.fallback!=='poster'){backdrop.dataset.fallback='poster';backdrop.src=IMG+featured.poster_path}else{backdrop.style.display='none'}};backdrop.src=featured.backdrop_path?BACK+featured.backdrop_path:(featured.poster_path?IMG+featured.poster_path:'');}
    $('heroTitle').style.cursor='pointer';
    $('heroTitle').onclick=()=>openDetail(featured.id,featured.media_type||(featured.first_air_date?'tv':'movie'));
   }
