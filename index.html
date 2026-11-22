@@ -700,7 +700,9 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 .provider-test-results button{display:flex;justify-content:space-between;gap:8px;text-align:left;padding:10px;border:1px solid #423456;border-radius:11px;background:#171222;color:#eee5ff}
 .provider-test-results small{color:#b8a8cd}
 
-.watchtime-panel{margin:18px 0 24px;padding:18px;border:1px solid #2a4030;border-radius:18px;background:linear-gradient(145deg,#0b140d,#060a07)}.watchtime-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.watchtime-head h2{font-size:22px;margin:3px 0 0}.watchtime-head>strong{font-size:22px;color:#dce9df}.watchtime-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}.watchtime-stats>div{padding:12px;border:1px solid #26392b;border-radius:12px;background:#080f0a}.watchtime-stats strong,.watchtime-stats small{display:block}.watchtime-stats strong{font-size:19px}.watchtime-stats small,.watchtime-note,.watchtime-item small{font-size:11px;color:var(--muted)}.watchtime-add{display:grid;grid-template-columns:1fr 120px;gap:9px}.watchtime-add input:first-child{grid-column:1/-1}.watchtime-add button{grid-column:1/-1}.watchtime-list{display:grid;gap:8px;margin-top:14px}.watchtime-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;background:#0c150e;border:1px solid #26392b;border-radius:12px}.watchtime-item strong,.watchtime-item small{display:block}.watchtime-item>strong{white-space:nowrap;color:#dce9df}.watchtime-note{line-height:1.5;margin:11px 0 0}@media(max-width:360px){.watchtime-add{grid-template-columns:1fr}.watchtime-add input:first-child,.watchtime-add button{grid-column:auto}}</style>
+.watchtime-panel{margin:18px 0 24px;padding:18px;border:1px solid #2a4030;border-radius:18px;background:linear-gradient(145deg,#0b140d,#060a07)}.watchtime-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.watchtime-head h2{font-size:22px;margin:3px 0 0}.watchtime-head>strong{font-size:22px;color:#dce9df}.watchtime-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}.watchtime-stats>div{padding:12px;border:1px solid #26392b;border-radius:12px;background:#080f0a}.watchtime-stats strong,.watchtime-stats small{display:block}.watchtime-stats strong{font-size:19px}.watchtime-stats small,.watchtime-note,.watchtime-item small{font-size:11px;color:var(--muted)}.watchtime-add{display:grid;grid-template-columns:1fr 120px;gap:9px}.watchtime-add input:first-child{grid-column:1/-1}.watchtime-add button{grid-column:1/-1}.watchtime-list{display:grid;gap:8px;margin-top:14px}.watchtime-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;background:#0c150e;border:1px solid #26392b;border-radius:12px}.watchtime-item strong,.watchtime-item small{display:block}.watchtime-item>strong{white-space:nowrap;color:#dce9df}.watchtime-note{line-height:1.5;margin:11px 0 0}@media(max-width:360px){.watchtime-add{grid-template-columns:1fr}.watchtime-add input:first-child,.watchtime-add button{grid-column:auto}}
+.movai-account-panel .watchtime-head{align-items:center}.movai-account-panel #googleSignInBtn,.movai-account-panel #googleSignOutBtn{margin-top:8px}.movai-account-panel #googleSignOutBtn{margin-left:8px}
+</style>
 </head>
 <body>
 <header class="app-header">
@@ -731,7 +733,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 <section id="tv" class="page"><div class="section-head"><h2>TV Shows</h2><small>Series worth your time</small></div><div class="chips" id="tvGenres"></div><div id="tvGrid" class="grid"></div></section>
 <section id="search" class="page"><div class="section-head"><h2 id="searchTitle">Search</h2></div><form class="search-inline" id="searchFormMobile"><input class="field" id="searchInputMobile" placeholder="Search movies & series…" aria-label="Search titles"><button class="primary">Search</button></form><div id="searchGrid" class="grid"><div class="empty">Search for a movie or TV show.</div></div></section>
 <section id="watchlist" class="page"><div class="section-head"><h2>My Watchlist</h2><small id="watchCount">0 titles</small></div><div id="watchGrid" class="grid"><div class="empty">Your watchlist is empty. Add titles from their detail pages.</div></div></section>
-<section id="profile" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">YOUR MOVAI SPACE</div><h1>Profile</h1></div></div><div class="profile-summary"><div><strong id="profileWatchCount">0</strong><small>Saved titles</small></div><div><strong id="profileContinueCount">0</strong><small>Continue watching</small></div><div><strong id="profileDownloadCount">0</strong><small>Downloads</small></div></div><div class="watchtime-panel"><div class="watchtime-head"><div><span class="profile-kicker">YOUR CINEMA HISTORY</span><h2>Watch Time</h2></div><strong id="watchTimeTotal">0h 0m</strong></div><div class="watchtime-stats"><div><strong id="watchMovieCount">0</strong><small>Movies</small></div><div><strong id="watchSeriesCount">0</strong><small>Series</small></div><div><strong id="watchTimeAuto">0h 0m</strong><small>Tracked here</small></div></div><div class="watchtime-add"><input class="field" id="watchTitleInput" placeholder="Film or series title"><select class="field" id="watchTypeInput"><option value="movie">Movie</option><option value="tv">Series</option></select><input class="field" id="watchHoursInput" type="number" min="0.1" max="1000" step="0.1" placeholder="Hours watched"><button class="primary" id="addWatchTimeBtn">＋ Add watch time</button></div><p class="watchtime-note">Add titles you watched before MOVAI. Playback time is tracked automatically when you start a title from its details page.</p><div id="watchTimeList" class="watchtime-list"></div></div><div class="settings-group"><div class="settings-group-title">Your library</div><button class="settings-row" data-open-page="watchlist"><span class="settings-icon">♡</span><span><strong>My Watchlist</strong><small>Movies and series you saved</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Queue and downloaded files</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Open your MOVAI player</small></span><span class="settings-arrow">›</span></button></div><div class="settings-group"><div class="settings-group-title">App</div><button class="settings-row" data-open-page="settings"><span class="settings-icon">⚙</span><span><strong>Settings</strong><small>TMDB, sources and app preferences</small></span><span class="settings-arrow">›</span></button></div></section>
+<section id="profile" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">YOUR MOVAI SPACE</div><h1>Profile</h1></div></div><div class="watchtime-panel movai-account-panel"><div class="watchtime-head"><div><span class="profile-kicker">CLOUD ACCOUNT</span><h2>Google Sync</h2></div><span id="cloudSyncState" class="download-status">NOT SIGNED IN</span></div><p id="cloudAccountText" class="watchtime-note">Sign in to keep your Watch Time safe across devices and after browser resets.</p><button class="primary" id="googleSignInBtn" type="button">Continue with Google</button><button class="secondary hidden" id="googleSignOutBtn" type="button">Sign out</button><p id="cloudAuthMessage" class="status" aria-live="polite"></p></div><div class="profile-summary"><div><strong id="profileWatchCount">0</strong><small>Saved titles</small></div><div><strong id="profileContinueCount">0</strong><small>Continue watching</small></div><div><strong id="profileDownloadCount">0</strong><small>Downloads</small></div></div><div class="watchtime-panel"><div class="watchtime-head"><div><span class="profile-kicker">YOUR CINEMA HISTORY</span><h2>Watch Time</h2></div><strong id="watchTimeTotal">0h 0m</strong></div><div class="watchtime-stats"><div><strong id="watchMovieCount">0</strong><small>Movies</small></div><div><strong id="watchSeriesCount">0</strong><small>Series</small></div><div><strong id="watchTimeAuto">0h 0m</strong><small>Tracked here</small></div></div><div class="watchtime-add"><input class="field" id="watchTitleInput" placeholder="Film or series title"><select class="field" id="watchTypeInput"><option value="movie">Movie</option><option value="tv">Series</option></select><input class="field" id="watchHoursInput" type="number" min="0.1" max="1000" step="0.1" placeholder="Hours watched"><button class="primary" id="addWatchTimeBtn">＋ Add watch time</button></div><p class="watchtime-note">Add titles you watched before MOVAI. Playback time is tracked automatically when you start a title from its details page.</p><div id="watchTimeList" class="watchtime-list"></div></div><div class="settings-group"><div class="settings-group-title">Your library</div><button class="settings-row" data-open-page="watchlist"><span class="settings-icon">♡</span><span><strong>My Watchlist</strong><small>Movies and series you saved</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Queue and downloaded files</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Open your MOVAI player</small></span><span class="settings-arrow">›</span></button></div><div class="settings-group"><div class="settings-group-title">App</div><button class="settings-row" data-open-page="settings"><span class="settings-icon">⚙</span><span><strong>Settings</strong><small>TMDB, sources and app preferences</small></span><span class="settings-arrow">›</span></button></div></section>
 <section id="detail" class="page"><button class="secondary detail-back" id="backBtn">← Back</button><div id="detailContent"></div></section>
 <section id="player" class="page">
  <div class="section-head"><h2>Player</h2><small>Your sources · Your control</small></div>
@@ -794,6 +796,9 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
  <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 4V2h8v2M8 9h8M8 13h8"/></svg></span><small>Library</small></button>
  <button data-page="profile" aria-label="Profile"><span class="nav-icon profile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3.2-5 7-5s6.3 1.8 7 5"/></svg></span><small>Profile</small></button>
 </nav>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
 <script>
 const API='https://api.themoviedb.org/3',IMG='https://image.tmdb.org/t/p/w500',BACK='https://image.tmdb.org/t/p/w1280';
@@ -845,6 +850,85 @@ const WATCH_TIME_STORE='movai_watch_time_v1';
 let watchTimeEntries=readStore(WATCH_TIME_STORE,[]);
 if(!Array.isArray(watchTimeEntries))watchTimeEntries=[];
 let watchLastMediaTime=null;
+const firebaseConfig = {
+ apiKey: "AIzaSyC58Qe8Tkkj3AeoMHITCONtEO8zDKxI4cQ",
+ authDomain: "movai-1b876.firebaseapp.com",
+ projectId: "movai-1b876",
+ storageBucket: "movai-1b876.firebasestorage.app",
+ messagingSenderId: "451535588301",
+ appId: "1:451535588301:web:5ac720b6c32aacc1f41284",
+ measurementId: "G-T88X4SXWCD"
+};
+let movaiAuth=null,movaiDb=null,movaiUser=null,movaiCloudReady=false,movaiCloudWriteTimer=null,movaiLastCloudWrite=0;
+function cloudStatus(message,state){
+ const el=$('cloudAuthMessage'),badge=$('cloudSyncState');
+ if(el)setStatus(el,message,state||'');
+ if(badge)badge.textContent=state==='ok'?'CLOUD SYNC ON':state==='error'?'SYNC ISSUE':movaiUser?'SYNCING…':'NOT SIGNED IN';
+}
+function renderCloudAccount(){
+ const login=$('googleSignInBtn'),logout=$('googleSignOutBtn'),label=$('cloudAccountText');
+ if(login)login.classList.toggle('hidden',!!movaiUser);
+ if(logout)logout.classList.toggle('hidden',!movaiUser);
+ if(label)label.textContent=movaiUser?'Signed in as '+(movaiUser.email||'Google account')+'. Watch Time syncs to your MOVAI cloud account.':'Sign in to keep your Watch Time safe across devices and after browser resets.';
+ const badge=$('cloudSyncState');if(badge)badge.textContent=movaiUser?(movaiCloudReady?'CLOUD SYNC ON':'CONNECTING…'):'NOT SIGNED IN';
+}
+function cloudDocId(entry){return encodeURIComponent(String(entry.key||'').slice(0,500))}
+function normalizeWatchEntry(x){
+ return {key:String(x.key||''),title:String(x.title||''),type:x.type==='tv'?'tv':'movie',manualSeconds:Math.max(0,Number(x.manualSeconds)||0),trackedSeconds:Math.max(0,Number(x.trackedSeconds)||0),updated:Number(x.updated)||Date.now()};
+}
+async function syncWatchTimeFromCloud(){
+ if(!movaiUser||!movaiDb)return;
+ movaiCloudReady=false;renderCloudAccount();
+ try{
+  const ref=movaiDb.collection('users').doc(movaiUser.uid).collection('watchTime');
+  const snap=await ref.get(),remote=snap.docs.map(d=>normalizeWatchEntry(d.data()));
+  const map=new Map();
+  remote.forEach(x=>map.set(x.key,x));
+  watchTimeEntries.map(normalizeWatchEntry).forEach(local=>{
+   const old=map.get(local.key);
+   if(!old)map.set(local.key,local);
+   else map.set(local.key,{...old,title:local.title||old.title,manualSeconds:Math.max(old.manualSeconds,local.manualSeconds),trackedSeconds:Math.max(old.trackedSeconds,local.trackedSeconds),updated:Math.max(old.updated,local.updated)});
+  });
+  watchTimeEntries=Array.from(map.values()).sort((a,b)=>b.updated-a.updated);
+  writeStore(WATCH_TIME_STORE,watchTimeEntries);
+  const batch=movaiDb.batch();
+  watchTimeEntries.forEach(entry=>batch.set(ref.doc(cloudDocId(entry)),entry,{merge:true}));
+  if(watchTimeEntries.length)await batch.commit();
+  movaiCloudReady=true;renderWatchTime();renderCloudAccount();cloudStatus('Watch Time backed up to your Google account.','ok');
+ }catch(error){movaiCloudReady=false;renderCloudAccount();cloudStatus('Cloud sync failed: '+(error.message||'Check Firestore setup and security rules.'),'error')}
+}
+async function saveWatchTimeToCloud(){
+ if(!movaiUser||!movaiDb||!movaiCloudReady)return;
+ const now=Date.now();
+ if(now-movaiLastCloudWrite<8000){
+  clearTimeout(movaiCloudWriteTimer);
+  movaiCloudWriteTimer=setTimeout(saveWatchTimeToCloud,8000-(now-movaiLastCloudWrite));
+  return;
+ }
+ movaiLastCloudWrite=now;
+ try{
+  const batch=movaiDb.batch(),ref=movaiDb.collection('users').doc(movaiUser.uid).collection('watchTime');
+  watchTimeEntries.forEach(entry=>batch.set(ref.doc(cloudDocId(entry)),normalizeWatchEntry(entry),{merge:true}));
+  if(watchTimeEntries.length)await batch.commit();
+  cloudStatus('Watch Time saved to cloud.','ok');
+ }catch(error){cloudStatus('Could not save to cloud: '+(error.message||'Try again.'),'error')}
+}
+function saveWatchTime(){writeStore(WATCH_TIME_STORE,watchTimeEntries);if(movaiUser&&movaiCloudReady)saveWatchTimeToCloud()}
+function initMovaiFirebase(){
+ try{
+  if(!window.firebase){cloudStatus('Firebase SDK did not load. Check your connection.','error');return}
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  movaiAuth=firebase.auth();movaiDb=firebase.firestore();
+  const provider=new firebase.auth.GoogleAuthProvider();
+  const login=$('googleSignInBtn'),logout=$('googleSignOutBtn');
+  if(login)login.onclick=async()=>{try{cloudStatus('Opening Google sign-in…');await movaiAuth.signInWithPopup(provider)}catch(error){cloudStatus(error.message||'Google sign-in failed.','error')}};
+  if(logout)logout.onclick=async()=>{try{await movaiAuth.signOut();cloudStatus('Signed out. Your cloud data remains saved.','ok')}catch(error){cloudStatus(error.message||'Sign-out failed.','error')}};
+  movaiAuth.onAuthStateChanged(async user=>{
+   movaiUser=user||null;movaiCloudReady=false;renderCloudAccount();
+   if(user)await syncWatchTimeFromCloud();else cloudStatus('Sign in to back up Watch Time to your Google account.');
+  });
+ }catch(error){cloudStatus('Firebase setup error: '+(error.message||'Check configuration.'),'error')}
+}
 function watchTimeLabel(seconds){
  const mins=Math.floor(Math.max(0,Number(seconds)||0)/60),hours=Math.floor(mins/60),remain=mins%60;
  return hours+'h '+remain+'m';
@@ -1367,6 +1451,7 @@ if($('addWatchTimeBtn'))$('addWatchTimeBtn').onclick=()=>{
  $('watchTitleInput').value='';$('watchHoursInput').value='';renderWatchTime();
 };
 renderContinue();renderWatchlist();renderDownloadQueue();
+initMovaiFirebase();
 initData();
 
 /* MOVAI Manifest + Repository support */
