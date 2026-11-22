@@ -624,6 +624,18 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 @media(max-width:420px){.hero{min-height:650px;height:78svh;padding:24px 18px 42px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bottom-nav{width:calc(100% - 36px)}}
 
 
+/* Profile page + reliable mobile navigation */
+.profile-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 20px}
+.profile-summary>div{min-width:0;padding:16px 10px;border:1px solid var(--line);border-radius:16px;background:var(--surface);text-align:center}
+.profile-summary strong{display:block;font-size:24px;font-weight:850;color:var(--text)}
+.profile-summary small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+#profile .settings-group{background:var(--surface);border-color:var(--line)}
+#profile .settings-icon{background:var(--surface2)}
+#search .search-inline{display:flex;gap:9px;margin:0 0 18px}
+#search .search-inline .field{flex:1;min-width:0}
+.bottom-nav button{touch-action:manipulation;pointer-events:auto}
+@media(max-width:420px){.profile-summary{gap:7px}.profile-summary>div{padding:13px 5px}.profile-summary strong{font-size:21px}}
+
 /* MOVAI settings + icon-only navigation cleanup */
 .bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important;height:66px!important;padding:6px 10px!important}
 .bottom-nav button{gap:0!important;justify-content:center!important}
@@ -719,6 +731,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 <section id="tv" class="page"><div class="section-head"><h2>TV Shows</h2><small>Series worth your time</small></div><div class="chips" id="tvGenres"></div><div id="tvGrid" class="grid"></div></section>
 <section id="search" class="page"><div class="section-head"><h2 id="searchTitle">Search</h2></div><form class="search-inline" id="searchFormMobile"><input class="field" id="searchInputMobile" placeholder="Search movies & series…" aria-label="Search titles"><button class="primary">Search</button></form><div id="searchGrid" class="grid"><div class="empty">Search for a movie or TV show.</div></div></section>
 <section id="watchlist" class="page"><div class="section-head"><h2>My Watchlist</h2><small id="watchCount">0 titles</small></div><div id="watchGrid" class="grid"><div class="empty">Your watchlist is empty. Add titles from their detail pages.</div></div></section>
+<section id="profile" class="page"><div class="profile-heading"><div class="profile-avatar">M</div><div><div class="profile-kicker">YOUR MOVAI SPACE</div><h1>Profile</h1></div></div><div class="profile-summary"><div><strong id="profileWatchCount">0</strong><small>Saved titles</small></div><div><strong id="profileContinueCount">0</strong><small>Continue watching</small></div><div><strong id="profileDownloadCount">0</strong><small>Downloads</small></div></div><div class="settings-group"><div class="settings-group-title">Your library</div><button class="settings-row" data-open-page="watchlist"><span class="settings-icon">♡</span><span><strong>My Watchlist</strong><small>Movies and series you saved</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="downloads"><span class="settings-icon">↓</span><span><strong>Downloads</strong><small>Queue and downloaded files</small></span><span class="settings-arrow">›</span></button><button class="settings-row" data-open-page="player"><span class="settings-icon">▶</span><span><strong>Playback</strong><small>Open your MOVAI player</small></span><span class="settings-arrow">›</span></button></div><div class="settings-group"><div class="settings-group-title">App</div><button class="settings-row" data-open-page="settings"><span class="settings-icon">⚙</span><span><strong>Settings</strong><small>TMDB, sources and app preferences</small></span><span class="settings-arrow">›</span></button></div></section>
 <section id="detail" class="page"><button class="secondary detail-back" id="backBtn">← Back</button><div id="detailContent"></div></section>
 <section id="player" class="page">
  <div class="section-head"><h2>Player</h2><small>Your sources · Your control</small></div>
@@ -779,7 +792,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
  <button class="active" data-page="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
  <button data-page="search" aria-label="Search"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><small>Search</small></button>
  <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 4V2h8v2M8 9h8M8 13h8"/></svg></span><small>Library</small></button>
- <button data-page="settings" aria-label="Settings"><span class="nav-icon profile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3.2-5 7-5s6.3 1.8 7 5"/></svg></span><small>Settings</small></button>
+ <button data-page="profile" aria-label="Profile"><span class="nav-icon profile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3.2-5 7-5s6.3 1.8 7 5"/></svg></span><small>Profile</small></button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
 <script>
@@ -828,26 +841,35 @@ function setStatus(el,msg,type=''){
  el.className='status'+(type?' '+type:'');
 }
 
+function renderProfile(){
+ const a=$('profileWatchCount'),b=$('profileContinueCount'),c=$('profileDownloadCount');
+ if(a)a.textContent=watchlist.length;
+ if(b)b.textContent=continueList.length;
+ if(c)c.textContent=readStore('movai_download_queue',[]).length;
+}
 function page(id){
  const target=$(id);if(!target||!target.classList.contains('page'))return;
  if(id==='search'&&currentPage!=='detail')lastPage=currentPage;
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
  document.querySelectorAll('.bottom-nav [data-page]').forEach(b=>{const active=b.dataset.page===id;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
  currentPage=id;
- window.scrollTo({top:0,behavior:'instant'});
+ window.scrollTo({top:0,behavior:'auto'});
  if(id==='watchlist')renderWatchlist();
  if(id==='downloads')renderDownloadQueue();
  if(id==='home')renderContinue();
+ if(id==='profile')renderProfile();
+ if(id==='search'){const input=$('searchInputMobile');if(input)setTimeout(()=>input.focus(),80)}
 }
 window.movaiNavigate=page;
 
 document.addEventListener('click',e=>{
  const settingNav=e.target.closest('[data-open-page]');
  if(settingNav){e.preventDefault();page(settingNav.dataset.openPage);return}
- const nav=e.target.closest('.bottom-nav [data-page]');
- if(nav){e.preventDefault();page(nav.dataset.page);const more=document.querySelector('.nav-more');if(more)more.open=false;return}
  const go=e.target.closest('[data-go]');
  if(go){e.preventDefault();page(go.dataset.go);return}
+});
+document.querySelectorAll('.bottom-nav [data-page]').forEach(button=>{
+ button.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();page(button.dataset.page)});
 });
 if($('fontSelect'))$('fontSelect').addEventListener('change',e=>applyFont(e.target.value));
 if($('resetFont'))$('resetFont').onclick=()=>applyFont('plus-jakarta');
