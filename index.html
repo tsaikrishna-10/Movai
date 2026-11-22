@@ -845,7 +845,7 @@ function renderProfile(){
  const a=$('profileWatchCount'),b=$('profileContinueCount'),c=$('profileDownloadCount');
  if(a)a.textContent=watchlist.length;
  if(b)b.textContent=continueList.length;
- if(c)c.textContent=readStore('movai_download_queue',[]).length;
+ if(c)c.textContent=readStore('krxnu_download_queue',[]).length;
 }
 function page(id){
  const target=$(id);if(!target||!target.classList.contains('page'))return;
@@ -910,9 +910,19 @@ function demoResponse(path){
  return {results:[]};
 }
 
+async function fetchWithTimeout(url,options={},timeout=15000){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),timeout);
+ try{
+  return await fetch(url,{...options,signal:controller.signal});
+ }catch(error){
+  if(error&&error.name==='AbortError')throw new Error('Request timed out. Check your connection and try again.');
+  throw error;
+ }finally{clearTimeout(timer)}
+}
 async function api(path){
  if(!key)return demoResponse(path);
- const r=await fetch(API+path,{headers:{Authorization:'Bearer '+key,accept:'application/json'}});
+ const r=await fetchWithTimeout(API+path,{headers:{Authorization:'Bearer '+key,accept:'application/json'}});
  if(!r.ok)throw Error('TMDB request failed ('+r.status+'). Check your API token.');
  return r.json();
 }
@@ -1054,7 +1064,7 @@ function rememberContinue(url,name,kind){continueList=continueList.filter(x=>x.u
 if($('clearContinue'))$('clearContinue').onclick=()=>{continueList=[];writeStore('movai_continue',continueList);renderContinue()};
 
 async function verifyToken(token){
- const r=await fetch(API+'/configuration',{headers:{Authorization:'Bearer '+token,accept:'application/json'}});
+ const r=await fetchWithTimeout(API+'/configuration',{headers:{Authorization:'Bearer '+token,accept:'application/json'}});
  if(!r.ok)throw Error('Invalid or unauthorized TMDB token ('+r.status+').');
 }
 if($('saveKey'))$('saveKey').onclick=async()=>{
@@ -1178,7 +1188,7 @@ function addToDownloadQueue(){
 }
 async function startQueuedDownload(id){
  const item=downloadQueue.find(x=>x.id===id);if(!item||item.status==='downloading')return;
- if(/\\.m3u8(?:$|\\?)/i.test(item.url)){
+ if(/\.m3u8(?:$|\?)/i.test(item.url)){
   setDownloadMessage(id,'HLS playlist detected. This is not a single video file; choose a direct MP4/WebM source or an authorized downloadable rendition.','error');return;
  }
  item.status='downloading';item.progress=0;item.error='';writeStore('krxnu_download_queue',downloadQueue);renderDownloadQueue();
@@ -1191,10 +1201,10 @@ async function startQueuedDownload(id){
   const response=await fetch(item.url,{method:'GET',mode:'cors',credentials:'omit'});
   if(!response.ok)throw new Error('Source returned HTTP '+response.status+'.');
   const type=response.headers.get('content-type')||'';
-  if(/mpegurl|vnd\\.apple\\.mpegurl/i.test(type))throw new Error('This is an HLS playlist, not a direct file. Use a direct MP4/WebM download URL.');
+  if(/mpegurl|vnd\.apple\.mpegurl/i.test(type))throw new Error('This is an HLS playlist, not a direct file. Use a direct MP4/WebM download URL.');
   const total=Number(response.headers.get('content-length')||0);
   const disposition=response.headers.get('content-disposition')||'';
-  const match=disposition.match(/filename\\*?=(?:UTF-8''|")?([^;"]+)/i);
+  const match=disposition.match(/filename\*?=(?:UTF-8''|")?([^;"]+)/i);
   const filename=(match?decodeURIComponent(match[1].replace(/"$/,'')):item.name)||'movai-video';
   if(total>850*1024*1024){
    if(!window.showSaveFilePicker||!response.body?.getReader)throw new Error('This file is larger than the safe in-browser limit (850 MB). Large downloads need a native MOVAI Android build or the provider’s official download option.');
