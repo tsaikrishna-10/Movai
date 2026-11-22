@@ -712,16 +712,33 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 .bottom-nav button.active .nav-icon{color:#17130a!important;filter:none!important}
 .bottom-nav button.active small{color:#17130a!important}
 .home-categories button.active{background:#f3c94b!important;color:#17130a!important;border-color:#f3c94b!important}
+
+/* MOVAI Peacock-inspired account header and floating dock */
+.app-header{height:86px!important;padding:12px 20px!important;gap:12px!important;background:linear-gradient(115deg,#111b23,#21141f 78%)!important;border:0!important;box-shadow:none!important}
+.header-avatar{width:48px;height:48px;flex:0 0 48px;border:0;border-radius:50%;background:linear-gradient(145deg,#d9a66d,#485d72);color:#fff;font-size:20px;font-weight:900;box-shadow:0 0 0 2px #ffffff20}
+.header-greeting{display:flex;flex-direction:column;gap:4px;min-width:0;color:#fff;text-decoration:none}.header-greeting span{font-size:9px;font-weight:850;letter-spacing:1.7px;color:#c8c1ca}.header-greeting strong{font-size:19px;line-height:1.1;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-actions{margin-left:auto;display:flex;gap:8px;align-items:center}.header-action{width:43px;height:43px;border:1px solid #ffffff28;border-radius:50%;background:#ffffff12;color:#eee;display:grid;place-items:center}.header-action svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.header-search{display:none!important}
+.home-categories{padding:10px 0 18px!important;gap:10px!important}.home-categories button{padding:11px 19px!important;background:linear-gradient(120deg,#211e29,#17151d)!important;border:1px solid #ffffff18!important;color:#e6e0e9!important;font-size:14px!important;font-weight:650!important}.home-categories button.active{background:#f4c43e!important;color:#18130a!important;border-color:#f4c43e!important}
+.bottom-nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;bottom:calc(14px + env(safe-area-inset-bottom))!important;width:min(390px,calc(100vw - 42px))!important;height:78px!important;padding:7px 9px!important;grid-template-columns:repeat(4,1fr)!important;gap:4px!important;border-radius:42px!important;background:rgba(92,91,57,.92)!important;border:1px solid #b8b17a80!important;box-shadow:0 12px 35px #0009!important;backdrop-filter:blur(14px)!important}
+.bottom-nav button{position:relative!important;flex-direction:row!important;gap:0!important;border-radius:36px!important;color:#e5e2cf!important;background:transparent!important;min-width:0!important}.bottom-nav button .nav-icon{display:grid;place-items:center;width:100%;font-size:0!important}.bottom-nav button .nav-icon svg{width:25px!important;height:25px!important;stroke:currentColor!important;stroke-width:1.7!important}.bottom-nav button small{display:none!important}.bottom-nav button.active{background:#fff!important;color:#171717!important;border-radius:34px!important;box-shadow:0 2px 10px #0002!important}.bottom-nav button.active .nav-icon{color:#171717!important}
+@media(max-width:700px){.app-header{height:86px!important;padding:12px 18px!important}.header-greeting strong{font-size:18px}.header-action{width:42px;height:42px}.home-categories{margin:0!important;padding:9px 0 17px!important}.bottom-nav{width:calc(100vw - 48px)!important;max-width:390px!important;bottom:calc(13px + env(safe-area-inset-bottom))!important;height:76px!important}.wrap{padding-bottom:115px!important}}
+@media(min-width:701px){.app-header{padding-left:max(24px,calc((100vw - 1100px)/2))!important;padding-right:max(24px,calc((100vw - 1100px)/2))!important}}
 </style>
 </head>
 <body>
 <header class="app-header">
-  <a class="brand" href="#" data-go="home" aria-label="MOVAI home">MOVAI</a>
+  <button class="header-avatar" type="button" data-go="profile" aria-label="Open profile">M</button>
+  <a class="header-greeting" href="#" data-go="profile"><span>YOUR MOVAI SPACE</span><strong id="headerGreeting">Welcome back</strong></a>
+  <div class="header-actions">
+    <button class="header-action" type="button" data-go="profile" aria-label="Account"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button>
+    <button class="header-action" type="button" data-go="settings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
   <form class="header-search" id="searchForm" role="search"><span class="search-symbol" aria-hidden="true">⌕</span><input id="searchInput" placeholder="Search movies, series…" aria-label="Search titles"><button class="search-submit" aria-label="Search" title="Search">⌕</button></form>
 </header>
 <main class="wrap">
 <section id="home" class="page active">
-  <div class="home-categories" aria-label="Browse categories"><button class="active" type="button" data-go="home">For You</button><button type="button" data-go="movies">Movies</button><button type="button" data-go="tv">TV Shows</button><button type="button" data-go="watchlist">My List</button></div>
+  <div class="home-categories" aria-label="Browse categories"><button class="active" type="button" data-go="movies">Movies</button><button type="button" data-go="home">For You</button><button type="button" data-go="tv">TV Shows</button><button type="button" data-go="watchlist">My List</button></div>
   <div class="hero" id="homeHero">
     <img id="heroBackdrop" class="hero-backdrop" alt="" aria-hidden="true">
     <div class="hero-copy"><div class="eyebrow" id="heroEyebrow">YOUR NEXT GREAT WATCH STARTS HERE</div><h1 id="heroTitle">Stories worth<br>staying in for.</h1><p id="heroOverview">Discover films and series, follow your favourites and keep your personal watch space in one place.</p><div class="actions"><button class="primary" id="exploreBtn">Explore titles</button><button class="secondary" id="heroPlayerBtn">Open player</button></div></div>
@@ -802,7 +819,7 @@ body{background:#000;padding-bottom:calc(var(--navh) + env(safe-area-inset-botto
 <nav class="bottom-nav" aria-label="Main navigation">
  <button class="active" data-page="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><small>Home</small></button>
  <button data-page="search" aria-label="Search"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><small>Search</small></button>
- <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 4V2h8v2M8 9h8M8 13h8"/></svg></span><small>Library</small></button>
+ <button data-page="watchlist" aria-label="Library"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 3V6a2 2 0 0 1 1-2z"/><path d="M8 9h8M8 13h6"/></svg></span><small>Library</small></button>
  <button data-page="profile" aria-label="Profile"><span class="nav-icon profile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.2 3.2-5 7-5s6.3 1.8 7 5"/></svg></span><small>Profile</small></button>
 </nav>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
