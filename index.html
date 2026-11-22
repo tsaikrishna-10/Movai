@@ -1012,7 +1012,7 @@ document.addEventListener('submit',e=>{
  const form=e.target.closest('#titleSourceForm');if(!form)return;
  e.preventDefault();
  const fd=new FormData(form),url=String(fd.get('url')||'').trim();
- if(!/^https?:\\/\\//i.test(url)){return}
+ if(!/^https?:\/\//i.test(url)){return}
  const key=form.dataset.titleSourceKey,all=getTitleDownloadSources(),list=Array.isArray(all[key])?all[key]:[];
  if(list.some(x=>x.url===url)){form.querySelector('input[name="url"]').setCustomValidity('This source is already saved.');form.querySelector('input[name="url"]').reportValidity();return}
  list.unshift({id:String(Date.now())+'-'+Math.random().toString(36).slice(2,7),url,label:String(fd.get('label')||'').trim(),quality:String(fd.get('quality')||''),size:String(fd.get('size')||'').trim(),title:form.dataset.titleSourceTitle||''});
